@@ -6,35 +6,37 @@ class Field:
 	def __init__(self, MAP_SIZE, tile_size):
 		self.MAP_SIZE = MAP_SIZE
 		self.tile_size = tile_size
-		self.cells = [[None for j in range(self.MAP_SIZE[0]+2)] for i in range(self.MAP_SIZE[1]+2)]
+		self.cells = [[None for j in range(self.MAP_SIZE[0]+2)] for i in range(self.MAP_SIZE[1]+2)] # Empty 2d array
 		self.MAP = pygame.surface.Surface(((self.MAP_SIZE[0] + 2) * self.tile_size, (self.MAP_SIZE[1] + 2) * self.tile_size))
 		self.basic_tiles = []
 		self.walls = []
 		self.box_images = []
-		self.leak_image = None
+		self.leak_images = [] # Will be loaded in load_tiles
 		self.corner = None
 		self.load_tiles('Images/tiles.png')
+		self.wallProbabilities = [48, 48, 4]
+		self.groundProbabilities = [86, 5, 5, 2, 2] # For 100 tiles, 48 will be of idx[0]...
 
 	def generate_map(self):
 		# Walls
 		for tileX in range(1,self.MAP_SIZE[0]+1):  # Top line
-			idx = random.randint(0, len(self.walls) - 1)
+			idx = self.generate_rand_wall_idx()
 
 			if idx == 2: # Add leak underneath wall
 				self.cells[0][tileX] = Tile("pipe", True, pygame.Vector2(tileX*self.tile_size, 0), False)
-				self.cells[1][tileX] = Tile(self.leak_image, False, pygame.Vector2(tileX*self.tile_size, self.tile_size), True)
+				self.cells[1][tileX] = Tile(self.leak_images[0], False, pygame.Vector2(tileX*self.tile_size, self.tile_size), True)
 			else:
 				wall = self.walls[idx]
 				self.cells[0][tileX] = Tile(wall, False, pygame.Vector2(tileX * self.tile_size, 0), False)
 
 
 		for tileX in range(1,self.MAP_SIZE[0]+1):  # Bottom line
-			idx = random.randint(0, len(self.walls) - 1)
+			idx = self.generate_rand_wall_idx()
 
 			if idx == 2:  # Add leak on top of wall)
 				self.cells[self.MAP_SIZE[1]+1][tileX] = Tile("pipe", True, pygame.Vector2(tileX * self.tile_size, (self.MAP_SIZE[1]+1)*self.tile_size), False)
 				self.cells[self.MAP_SIZE[1] + 1][tileX].rotate(180)
-				self.cells[self.MAP_SIZE[1]][tileX] = Tile(pygame.transform.rotate(self.leak_image, 180), False,
+				self.cells[self.MAP_SIZE[1]][tileX] = Tile(self.leak_images[2], False,
 											pygame.Vector2(tileX * self.tile_size, (self.MAP_SIZE[1])*self.tile_size), True)
 			else:
 				wall = pygame.transform.rotate(self.walls[idx], 180)
@@ -42,12 +44,12 @@ class Field:
 
 
 		for tileY in range(1,self.MAP_SIZE[1]+1):  # Left line
-			idx = random.randint(0, len(self.walls) - 1)
+			idx = self.generate_rand_wall_idx()
 
 			if idx == 2:  # Add leak underneath wall
 				self.cells[tileY][0] = Tile("pipe", True, pygame.Vector2(0, tileY*self.tile_size), False)
 				self.cells[tileY][0].rotate(90)
-				self.cells[tileY][1] = Tile(pygame.transform.rotate(self.leak_image, 90), False,
+				self.cells[tileY][1] = Tile(self.leak_images[1], False,
 											pygame.Vector2(self.tile_size, tileY*self.tile_size), True)
 			else:
 				wall = pygame.transform.rotate(self.walls[idx], 90)
@@ -55,11 +57,11 @@ class Field:
 
 
 		for tileY in range(1,self.MAP_SIZE[1]+1):  # Right line
-			idx = random.randint(0, len(self.walls) - 1)
+			idx = self.generate_rand_wall_idx()
 			if idx == 2:  # Add leak left to wall
 				self.cells[tileY][self.MAP_SIZE[0]+1] = Tile("pipe", True, pygame.Vector2((self.MAP_SIZE[0]+1) * self.tile_size, tileY*self.tile_size), False)
 				self.cells[tileY][self.MAP_SIZE[0]+1].rotate(270)
-				self.cells[tileY][self.MAP_SIZE[0]] = Tile(pygame.transform.rotate(self.leak_image, 270), False,
+				self.cells[tileY][self.MAP_SIZE[0]] = Tile(self.leak_images[3], False,
 											pygame.Vector2((self.MAP_SIZE[0]) * self.tile_size, tileY*self.tile_size), True)
 			else:
 				wall = pygame.transform.rotate(self.walls[idx], 270)
@@ -76,14 +78,29 @@ class Field:
 		for tileY in range(1, self.MAP_SIZE[1]+2):
 			for tileX in range(1, self.MAP_SIZE[0]+2):
 				if self.cells[tileY][tileX] is None:
-					tileImage = random.choice(self.basic_tiles)
-					self.cells[tileY][tileX] = Tile(tileImage, False,
+					tile_image = self.basic_tiles[self.generate_rand_ground_idx()]
+					self.cells[tileY][tileX] = Tile(tile_image, False,
 													pygame.Vector2(tileX * self.tile_size, tileY * self.tile_size),
 													True)
 
 		for row in self.cells:
 			for cell in row:
 				cell.display(self.MAP)
+
+	def generate_rand_wall_idx(self):
+		rand = random.random()*sum(self.wallProbabilities)
+
+		for i in range(len(self.wallProbabilities)):
+			if rand <= sum(self.wallProbabilities[:i+1]):
+				return i
+
+	def generate_rand_ground_idx(self):
+		rand = random.random()*sum(self.groundProbabilities)
+
+		for i in range(len(self.groundProbabilities)):
+			if rand <= sum(self.groundProbabilities[:i+1]):
+				return i
+
 
 	def update(self, dt, window):
 		self.MAP.fill("black")
@@ -99,19 +116,19 @@ class Field:
 		for i in range(5):
 			tile = pygame.surface.Surface((16,16))
 			tile.blit(tile_image,(-i*16,0))
-			self.basic_tiles.append(pygame.transform.scale(tile,(self.tile_size,self.tile_size)))
+			self.basic_tiles.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
 		for i in range(3):
 			tile = pygame.surface.Surface((16,16))
 			tile.blit(tile_image,(-i*16,-32))
-			self.walls.append(pygame.transform.scale(tile,(self.tile_size,self.tile_size)))
+			self.walls.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
 		for i in range(2):
 			tile = pygame.surface.Surface((16,16))
 			tile.blit(tile_image,(-i*16,-48))
-			self.box_images.append(tile)
-
-		self.leak_image = pygame.surface.Surface((16, 16))
-		self.leak_image.blit(tile_image,(0,-16))
-		self.leak_image = pygame.transform.scale(self.leak_image, (self.tile_size, self.tile_size))
+			self.box_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+		for i in range(4):
+			tile = pygame.surface.Surface((16, 16))
+			tile.blit(tile_image, (-i*16, -80))
+			self.leak_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
 
 		self.corner = pygame.surface.Surface((16,16))
 		self.corner.blit(tile_image,(-64,-16))
