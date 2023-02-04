@@ -1,7 +1,7 @@
 import pygame
 import random
 from spritesheet import Spritesheet
-
+from box import Box
 class Field:
 	def __init__(self, MAP_SIZE, tile_size):
 		self.MAP_SIZE = MAP_SIZE
@@ -125,6 +125,7 @@ class Tile(pygame.sprite.Sprite):
 		self.image = self.spritesheet.update(0)
 		self.position = position
 		self.walkable = walkable
+		self.objects_on_it = []
 
 	def update(self,dt) -> None:
 		self.image = self.spritesheet.update(dt)
@@ -134,3 +135,24 @@ class Tile(pygame.sprite.Sprite):
 
 	def rotate(self,angle):
 		self.spritesheet.rotate_spritesheet(angle)
+
+	def can_enter(self):
+		# 0 : cannot, 1: ok, 2: box on it
+		if self.walkable:
+			for item in self.objects_on_it:
+				if item.type == 'box':
+					return 2
+			return 1
+		return 0
+
+	def enter(self, item):
+		self.objects_on_it.append(item)
+		item.active_tile = self
+	def leave(self,item):
+		if item in self.objects_on_it:
+			self.objects_on_it.remove(item)
+	def get_box(self):
+		for item in self.objects_on_it:
+			if item.type == 'box':
+				return item
+		raise TypeError

@@ -2,8 +2,8 @@ import pygame
 from item import Item
 
 class Normal_Item(Item):
-	def __init__(self, window, reverse : bool, original_position: pygame.Vector2, images: list[pygame.Surface]):
-		super().__init__(window, reverse, original_position)
+	def __init__(self, window, reverse : bool, original_position: pygame.Vector2, images: list[pygame.Surface], grid):
+		super().__init__(window, original_position, grid)
 		if reverse:
 			self.image = pygame.transform.scale(images[0], (4*images[0].get_width(), 4*images[0].get_height()))
 			self.reverse_image = pygame.transform.scale(images[1], (4*images[1].get_width(), 4*images[1].get_height()))

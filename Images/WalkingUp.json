@@ -35,7 +35,7 @@
  "meta": {
   "app": "https://www.aseprite.org/",
   "version": "1.2.39-x64",
-  "image": "MARCHER.png",
+  "image": "WalkingUp.png",
   "format": "RGBA8888",
   "size": { "w": 64, "h": 24 },
   "scale": "1",

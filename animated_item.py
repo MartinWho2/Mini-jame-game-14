@@ -3,8 +3,8 @@ from item import Item
 from spritesheet import Spritesheet
 
 class Animated_Item(Item):
-	def __init__(self, window, reverse : bool, original_position: pygame.Vector2, images_names: list[str], play_again: list[bool]):
-		super().__init__(window, reverse, original_position)
+	def __init__(self, window, original_position: pygame.Vector2, images_names: list[str], play_again: list[bool], grid):
+		super().__init__(window, original_position,grid)
 
 		self.spritesheets = {}
 		for i, animation in enumerate(images_names):

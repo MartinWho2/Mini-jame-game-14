@@ -2,8 +2,8 @@ import pygame
 from animated_item import Animated_Item
 
 class Player(Animated_Item):
-	def __init__(self, window, original_position):
-		super().__init__(window, True, original_position, ['monster','WalkingLeft','WalkingRight', 'WalkingRight', 'WalkingRight'], [True, True, True, True, True])
+	def __init__(self, window, original_position, grid):
+		super().__init__(window, original_position, ['monster','WalkingLeft','WalkingRight', 'WalkingUp', 'WalkingDown'], [True, True, True, True, True], grid)
 		self.type = 'player'
 
 	def move(self, direction, item_list):

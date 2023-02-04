@@ -21,9 +21,9 @@ class Game:
 		self.field = Field(self.MAP_SIZE,self.tile_size)
 		self.field.generate_map()
 
-		self.player = Player(self.window, pygame.math.Vector2(5, 5))
-		self.box1 = Box(self.window, pygame.math.Vector2(7, 7), self.field.box_images)
-		self.box2 = Box(self.window, pygame.math.Vector2(8, 7),self.field.box_images)
+		self.player = Player(self.window, pygame.math.Vector2(5, 5),self.field.cells)
+		self.box1 = Box(self.window, pygame.math.Vector2(7, 7), self.field.box_images,self.field.cells)
+		self.box2 = Box(self.window, pygame.math.Vector2(8, 7),self.field.box_images,self.field.cells)
 		self.level_objects.add(self.player)
 		self.level_objects.add(self.box1)
 		self.level_objects.add(self.box2)
@@ -32,7 +32,7 @@ class Game:
 		self.read_level_file(self.level_strings[self.level_nb-1])
 
 	@staticmethod
-	def read_level_file(self, file: str):
+	def read_level_file( file: str):
 		with open(file, "r") as f:
 			text = f.readline()
 			f.close()
