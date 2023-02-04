@@ -12,6 +12,12 @@ class Animated_Item(Item):
 			self.spritesheets[images_names[i]] = spritesheet
 		self.active_spritesheet = images_names[0]
 		self.reverse_image = reverse_image
+		self.reversable = (reverse_image is not None)
+		self.type = type
+		if self.type == 'guard':
+			self.visible_tiles = []
+			self.yellow_surf = pygame.surface.Surface((self.tile_size,self.tile_size),pygame.SRCALPHA)
+			self.yellow_surf.fill((250,250,0,50))
 
 	def display(self, dt):
 		if not self.reversing:

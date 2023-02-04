@@ -9,14 +9,15 @@ class Normal_Item(Item):
 			self.reverse_image = images[1]
 		else:
 			self.image = images[0]
+		self.reversable = reverse
 
 	def display(self, dt):
 		if not self.reversing:
 			move_offset = pygame.Vector2(0, 0)
 			if self.moving:
-				move_offset.x = self.direction.x * self.case_width * (1-self.moving_time / self.true_moving_time)
-				move_offset.y = self.direction.y * self.case_width * (1-self.moving_time / self.true_moving_time)
-			self.window.blit(self.image, (self.position.x * self.case_width + self.map_offset.x - move_offset.x , self.position.y * self.case_width + self.map_offset.y - move_offset.y))
+				move_offset.x = self.direction.x * self.tile_size * (1-self.moving_time / self.true_moving_time)
+				move_offset.y = self.direction.y * self.tile_size * (1-self.moving_time / self.true_moving_time)
+			self.window.blit(self.image, (self.position.x * self.tile_size + self.map_offset.x - move_offset.x , self.position.y * self.tile_size + self.map_offset.y - move_offset.y))
 			if self.moving:
 				self.moving_time += dt
 				if self.moving_time > self.true_moving_time :
@@ -26,10 +27,10 @@ class Normal_Item(Item):
 			particles_image = self.particles_spritesheet.update(dt)
 
 			move_offset = pygame.Vector2(0, 0)
-			move_offset.x = self.direction.x * self.case_width * self.moving_time / self.true_reversing_time
-			move_offset.y = self.direction.y * self.case_width * self.moving_time / self.true_reversing_time
-			self.window.blit(self.reverse_image, (self.position.x * self.case_width + self.map_offset.x + move_offset.x, self.position.y * self.case_width + self.map_offset.y + move_offset.y))
-			self.window.blit(particles_image, (self.position.x * self.case_width + self.map_offset.x + move_offset.x, self.position.y * self.case_width + self.map_offset.y + move_offset.y))
+			move_offset.x = self.direction.x * self.tile_size * self.moving_time / self.true_reversing_time
+			move_offset.y = self.direction.y * self.tile_size * self.moving_time / self.true_reversing_time
+			self.window.blit(self.reverse_image, (self.position.x * self.tile_size + self.map_offset.x + move_offset.x, self.position.y * self.tile_size + self.map_offset.y + move_offset.y))
+			self.window.blit(particles_image, (self.position.x * self.tile_size + self.map_offset.x + move_offset.x, self.position.y * self.tile_size + self.map_offset.y + move_offset.y))
 
 			self.moving_time += dt
 			if self.moving_time > self.true_reversing_time:

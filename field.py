@@ -154,7 +154,7 @@ class Tile(pygame.sprite.Sprite):
 		self.spritesheet.rotate_spritesheet(angle)
 
 	def can_enter(self):
-		# 0 : cannot, 1: ok, 2: box on it
+		# 0 : cannot, 1: nothing on it, 2: box on it...
 		if self.walkable:
 			for item in self.objects_on_it:
 				if item.type == 'box':
