@@ -6,7 +6,7 @@ from player import Player
 from guard import Guard
 from box import Box
 from field import Field
-from laser import Laser
+from laser import Tower
 
 class Game:
 	def __init__(self, window: pygame.surface.Surface, level_nb: int):
@@ -33,6 +33,9 @@ class Game:
 		self.reversable_objects.add(self.guard1)
 		self.reversable_objects.add(self.box1)
 		self.reversable_objects.add(self.box2)
+		self.tower1 = Tower(self.window, pygame.math.Vector2(2, 2), self.field.cells, self.map_offset, (0, 1), self.non_reversible_objects)
+		self.non_reversible_objects.add(self.tower1)
+
 
 	def generate_level(self):
 		self.read_level_file(self.level_strings[self.level_nb-1])

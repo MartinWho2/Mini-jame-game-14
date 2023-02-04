@@ -15,7 +15,7 @@ class Item(pygame.sprite.Sprite):
 		self.reversed = False
 		self.reversing = False
 		self.movements = []
-		self.case_width = 64
+		self.tile_size = 64
 		self.map_offset = offset
 		self.grid = grid
 		self.active_tile = self.grid[int(self.position.x)][int(self.position.y)]

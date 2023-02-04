@@ -1,5 +1,6 @@
 import pygame
 from animated_item import Animated_Item
+from spritesheet import Spritesheet
 
 class Tower(Animated_Item):
 	def __init__(self, window:pygame.Surface, position: pygame.Vector2, cells, offset: pygame.Vector2, direction: tuple[int, int], non_reversible_objects):
@@ -8,18 +9,27 @@ class Tower(Animated_Item):
 		self.cells = cells
 		self.shooting = True
 		self.directions = ['up', 'down', 'left', 'right']
+		self.direction = direction
+		self.position = position
 		self.tuple_directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-		self.non_reversible_objects = non_reversible_objects
+		self.sprite_group = non_reversible_objects
+		self.lasers = pygame.sprite.Group()
+		self.walkable = False
 		try:
 			self.direction_text = self.directions[self.tuple_directions.index(direction)]
 		except:
 			raise ValueError(f'The inputted laser direction is {direction}, which is invalid.')
 
+		if self.shooting:
+			self.active_spritesheet = f'laser_shooting_{self.direction_text}'
+			self.create_lasers()
+			print(len(self.lasers))
+
 	def change_state(self):
 		self.shooting = not self.shooting
 
-		if self.active_spritesheet == 'idle':
-			self.active_spritesheet = f'shooting_{self.direction}'
+		if self.active_spritesheet == f'laser_idle_{self.direction_text}':
+			self.active_spritesheet = f'laser_shooting_{self.direction_text}'
 		else:
 			self.active_spritesheet = f'laser_idle_{self.direction_text}'
 

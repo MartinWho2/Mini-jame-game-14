@@ -43,6 +43,13 @@ class Player(Animated_Item):
 				self.moving = True
 				box = self.grid[int(self.position.x)][int(self.position.y)].get_box()
 				box.move(self.direction)
+
+				if self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].can_enter() == 4:
+					# Box moving against laser
+					self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].objects_on_it = [] # NOT FINAL
+			
+		elif next_cell == 4:
+			print('THe player is DEAD.')
 		else:
 			print(next_cell)
 			self.moving = False

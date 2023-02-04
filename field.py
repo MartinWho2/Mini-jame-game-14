@@ -165,9 +165,11 @@ class Tile(pygame.sprite.Sprite):
 	def enter(self, item):
 		self.objects_on_it.append(item)
 		item.active_tile = self
+
 	def leave(self,item):
 		if item in self.objects_on_it:
 			self.objects_on_it.remove(item)
+
 	def get_box(self):
 		for item in self.objects_on_it:
 			if item.type == 'box':

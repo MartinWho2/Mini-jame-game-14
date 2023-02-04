@@ -35,8 +35,12 @@ while playing:
 			mouse_pos = e.pos
 			mouse_pos = (int((mouse_pos[0]-game.map_offset[0]) / game.tile_size), int((mouse_pos[1]-game.map_offset[1]) / game.tile_size))
 			print(game.field.cells[mouse_pos[0]][mouse_pos[1]].objects_on_it)
-			for item in game.field.cells[mouse_pos[0]][mouse_pos[1]].objects_on_it:
-				item.reverse()
+			try:
+				for item in game.field.cells[mouse_pos[0]][mouse_pos[1]].objects_on_it:
+					if item.reversable:
+						item.reverse()
+			except:
+				print('Mouse position probably out of the map')
 
 
 	pygame.display.flip()
