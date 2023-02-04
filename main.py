@@ -23,12 +23,20 @@ while playing:
 			if not game.player.moving and not game.player.reversing:
 				if e.key == pygame.K_w:
 					game.player.move(pygame.math.Vector2(0,-1))
+					for guard in game.guards:
+						guard.move()
 				elif e.key == pygame.K_a:
 					game.player.move(pygame.math.Vector2(-1,0))
+					for guard in game.guards:
+						guard.move()
 				elif e.key == pygame.K_s:
 					game.player.move(pygame.math.Vector2(0,1))
+					for guard in game.guards:
+						guard.move()
 				elif e.key == pygame.K_d:
 					game.player.move(pygame.math.Vector2(1,0))
+					for guard in game.guards:
+						guard.move()
 
 		# Check collision with item
 		if e.type == pygame.MOUSEBUTTONUP:

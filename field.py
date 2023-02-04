@@ -159,6 +159,12 @@ class Tile(pygame.sprite.Sprite):
 			for item in self.objects_on_it:
 				if item.type == 'box':
 					return 2
+				if item.type == 'player':
+					return 3
+				if item.type == 'laser':
+					return 4
+				if item.type == 'guard':
+					return 5
 			return 1
 		return 0
 

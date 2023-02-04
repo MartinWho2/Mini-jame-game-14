@@ -16,6 +16,7 @@ class Game:
 		self.level_strings = ['level_1', 'level_2']
 		self.grid = []
 		self.reversable_objects = pygame.sprite.Group()
+		self.guards = pygame.sprite.Group()
 		self.non_reversible_objects = pygame.sprite.Group()
 		self.time = pygame.time.get_ticks()
 		self.dt = 0
@@ -26,11 +27,13 @@ class Game:
 		self.map_offset = pygame.Vector2(0,0)
 
 		self.player = Player(self.window, pygame.math.Vector2(5, 5),self.field.cells, self.map_offset)
-		self.guard1 = Guard(self.window, pygame.math.Vector2(8, 9), self.field.cells, self.map_offset)
+		path1 = [pygame.math.Vector2(0,1), pygame.math.Vector2(0,-1), pygame.math.Vector2(0,-1), pygame.math.Vector2(0,-1), pygame.math.Vector2(0,1), pygame.math.Vector2(0,1)]
+		self.guard1 = Guard(self.window, pygame.math.Vector2(9, 5), self.field.cells, self.map_offset, path1)
 		self.box1 = Box(self.window, pygame.math.Vector2(7, 7), self.field.box_images,self.field.cells, self.map_offset)
 		self.box2 = Box(self.window, pygame.math.Vector2(8, 7),self.field.box_images,self.field.cells, self.map_offset)
 		self.reversable_objects.add(self.player)
 		self.reversable_objects.add(self.guard1)
+		self.guards.add(self.guard1)
 		self.reversable_objects.add(self.box1)
 		self.reversable_objects.add(self.box2)
 		self.tower1 = Tower(self.window, pygame.math.Vector2(2, 2), self.field.cells, self.map_offset, (0, 1), self.non_reversible_objects)
@@ -60,3 +63,6 @@ class Game:
 			item.display(self.dt)
 		for item in self.non_reversible_objects:
 			item.display(self.dt)
+			if item.type == 'tower':
+				item.display_lasers(self.dt)
+

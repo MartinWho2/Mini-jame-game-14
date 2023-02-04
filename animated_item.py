@@ -3,7 +3,7 @@ from item import Item
 from spritesheet import Spritesheet
 
 class Animated_Item(Item):
-	def __init__(self, window, original_position: pygame.Vector2, images_names: list[str], play_again: list[bool], grid, offset: pygame.Vector2, reverse_image: pygame.Surface):
+	def __init__(self, window, type: str, original_position: pygame.Vector2, images_names: list[str], play_again: list[bool], grid, offset: pygame.Vector2, reverse_image: pygame.Surface):
 		super().__init__(window, original_position,grid, offset)
 
 		self.spritesheets = {}
@@ -23,51 +23,78 @@ class Animated_Item(Item):
 		if not self.reversing:
 			image = self.spritesheets[self.active_spritesheet].update(dt)
 			if image is None:
-				self.active_spritesheet = "Idle"
+				if self.type == 'player':
+					self.active_spritesheet = "Idle"
+				elif self.type == 'guard':
+					self.active_spritesheet = "LeGardienIdle"
 				image = self.spritesheets[self.active_spritesheet].update(0)
 			move_offset = pygame.Vector2(0,0)
 			if self.moving:
-				move_offset.x = self.direction.x * self.case_width * (1 - self.moving_time / self.true_moving_time)
-				move_offset.y = self.direction.y * self.case_width * (1 - self.moving_time / self.true_moving_time)
-
-			self.window.blit(image, (self.position.x * self.case_width + self.map_offset.x - move_offset.x ,
-									 (self.position.y-0.75) * self.case_width + self.map_offset.y - move_offset.y))
+				move_offset.x = self.direction.x * self.tile_size * (1 - self.moving_time / self.true_moving_time)
+				move_offset.y = self.direction.y * self.tile_size * (1 - self.moving_time / self.true_moving_time)
+			if self.type == 'player' or self.type == 'guard':
+				if self.type == 'guard':
+					for tile in self.visible_tiles:
+						self.window.blit(self.yellow_surf,(tile[0] * self.tile_size + self.map_offset.x, tile[1] * self.tile_size + self.map_offset.y))
+				self.window.blit(image, (self.position.x * self.tile_size + self.map_offset.x - move_offset.x,(self.position.y - 0.75) * self.tile_size + self.map_offset.y - move_offset.y))
+			else:
+				self.window.blit(image, (self.position.x * self.tile_size + self.map_offset.x - move_offset.x,
+										 self.position.y * self.tile_size + self.map_offset.y - move_offset.y))
 			if self.moving:
 				self.moving_time += dt
 				if self.moving_time > self.true_moving_time :
 					self.moving = False
 					self.moving_time = 0
 					self.spritesheets[self.active_spritesheet].reset()
-					self.active_spritesheet = "Idle"
+					if self.type == 'player':
+						self.active_spritesheet = "Idle"
+					elif self.type == 'guard':
+						self.active_spritesheet = "LeGardienIdle"
 					self.spritesheets[self.active_spritesheet].update(0)
 		else:
 			particles_image = self.particles_spritesheet.update(dt)
 
 			move_offset = pygame.Vector2(0, 0)
-			move_offset.x = self.direction.x * self.case_width * self.moving_time / self.true_reversing_time
-			move_offset.y = self.direction.y * self.case_width * self.moving_time / self.true_reversing_time
-			self.window.blit(self.reverse_image, (self.position.x * self.case_width + self.map_offset.x + move_offset.x, (self.position.y-0.75) * self.case_width + self.map_offset.y + move_offset.y))
-			self.window.blit(particles_image, (self.position.x * self.case_width + self.map_offset.x + move_offset.x, (self.position.y-0.75) * self.case_width + self.map_offset.y + move_offset.y))
-			self.window.blit(particles_image, (self.position.x * self.case_width + self.map_offset.x + move_offset.x, self.position.y * self.case_width + self.map_offset.y + move_offset.y))
+			move_offset.x = self.direction.x * self.tile_size * self.moving_time / self.true_reversing_time
+			move_offset.y = self.direction.y * self.tile_size * self.moving_time / self.true_reversing_time
+			self.window.blit(self.reverse_image, (self.position.x * self.tile_size + self.map_offset.x + move_offset.x, (self.position.y-0.75) * self.tile_size + self.map_offset.y + move_offset.y))
+			self.window.blit(particles_image, (self.position.x * self.tile_size + self.map_offset.x + move_offset.x, (self.position.y-0.75) * self.tile_size + self.map_offset.y + move_offset.y))
+			self.window.blit(particles_image, (self.position.x * self.tile_size + self.map_offset.x + move_offset.x, self.position.y * self.tile_size + self.map_offset.y + move_offset.y))
 
 			self.moving_time += dt
 			if self.moving_time > self.true_reversing_time:
 				self.movements.pop()
 				if len(self.movements) == 0:
 					self.position += self.direction
-					self.reversing = False
-					self.position = self.original_position
-					self.direction = pygame.math.Vector2(0, 0)
-					self.grid[int(self.original_position.x)][int(self.original_position.y)].enter(self)
-					self.particles_spritesheet.update(0)
+					if self.position == self.original_position:
+						print("bonne position")
+						self.reversing = False
+						self.direction = pygame.math.Vector2(0, 0)
+						self.grid[int(self.original_position.x)][int(self.original_position.y)].enter(self)
+						self.particles_spritesheet.update(0)
+					else:
+						difference = self.position - self.original_position
+						print("print de mes couilles", difference)
+						for i in range(int(abs(difference.x))):
+							if difference.x>0:
+								self.movements.append(pygame.math.Vector2(1 ,0))
+							else:
+								self.movements.append(pygame.math.Vector2(-1, 0))
+						for j in range(int(abs(difference.y))):
+							if difference.y > 0:
+								self.movements.append(pygame.math.Vector2(0, 1))
+							else:
+								self.movements.append(pygame.math.Vector2(0, -1))
+						print(self.movements)
+						self.direction = -self.movements[-1]
+						self.particles_spritesheet.update(0)
 				else:
 					self.position += self.direction
-					self.direction = -self.movements[len(self.movements) - 1]
+					self.direction = -self.movements[-1]
 					self.particles_spritesheet.update(0)
 				self.moving_time = 0
 
 	def reverse(self):
-		print("joueur")
 		if len(self.movements):
 			self.direction = -self.movements[len(self.movements)-1]
 			self.reversing = True

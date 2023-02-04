@@ -6,7 +6,7 @@ class Item(pygame.sprite.Sprite):
 		super().__init__()
 		self.window = window
 		self.original_position = original_position
-		self.position = self.original_position
+		self.position = pygame.math.Vector2(self.original_position.x, self.original_position.y)
 		self.moving = False
 		self.moving_time = 0
 		self.true_moving_time = 250
@@ -18,8 +18,7 @@ class Item(pygame.sprite.Sprite):
 		self.tile_size = 64
 		self.map_offset = offset
 		self.grid = grid
-		self.active_tile = self.grid[int(self.position.x)][int(self.position.y)]
-		self.active_tile.enter(self)
+		self.grid[int(self.position.x)][int(self.position.y)].enter(self)
 		self.particles_spritesheet = Spritesheet('reverse_particle', True, True)
 
 

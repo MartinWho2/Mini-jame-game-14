@@ -5,8 +5,7 @@ class Player(Animated_Item):
 	def __init__(self, window, original_position, grid, offset: pygame.Vector2):
 		reverse_image = pygame.image.load('Images/Reverse_Idle.png')
 		reverse_image =  pygame.transform.scale(reverse_image, (reverse_image.get_width()*4, reverse_image.get_height()*4))
-		super().__init__(window, original_position, ['Idle','WalkingLeft','WalkingRight', 'WalkingUp', 'WalkingDown'], [True, True, True, True, True], grid, offset, reverse_image)
-		self.type = 'player'
+		super().__init__(window, 'player', original_position, ['Idle','WalkingLeft','WalkingRight', 'WalkingUp', 'WalkingDown'], [True, True, True, True, True], grid, offset, reverse_image)
 
 	def move(self, direction):
 		self.direction = direction
@@ -27,7 +26,7 @@ class Player(Animated_Item):
 			self.movements.append(self.direction)
 			self.moving = True
 		elif next_cell == 2:
-			if self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].can_enter() == 1:
+			if self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].can_enter() in {1,4,5}:
 				self.active_tile.leave(self)
 				self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].enter(self)
 				if self.direction == (-1, 0):
