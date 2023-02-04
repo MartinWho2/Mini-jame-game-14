@@ -13,7 +13,8 @@ class Game:
 		self.level_nb = level_nb
 		self.level_strings = ['level_1', 'level_2']
 		self.grid = []
-		self.level_objects = pygame.sprite.Group()
+		self.reversable_objects = pygame.sprite.Group()
+		self.non_reversible_objects = pygame.sprite.Group()
 		self.time = pygame.time.get_ticks()
 		self.dt = 0
 		self.tile_image = pygame.image.load(os.path.join("Images","tiles.png"))
@@ -47,5 +48,5 @@ class Game:
 
 		self.field.update(self.dt, self.window)
 
-		for item in self.level_objects:
+		for item in self.reversable_objects:
 			item.display(self.dt)

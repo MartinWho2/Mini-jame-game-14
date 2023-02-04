@@ -31,9 +31,17 @@ class Normal_Item(Item):
 			self.moving_time += dt
 			if self.moving_time > self.true_reversing_time:
 				self.movements.pop()
-				if len(self.:movements)movements
-				self.reversing = False
-				self.position += self.direction
+				if len(self.movements) == 0:
+					self.position += self.direction
+					self.reversing = False
+					self.position = self.original_position
+					self.direction = pygame.math.Vector2(0, 0)
+					self.grid[int(self.original_position.x)][int(self.original_position.y)].enter(self)
+					self.particles_spritesheet.update(0)
+				else:
+					self.position += self.direction
+					self.direction = -self.movements[len(self.movements)-1]
+					self.particles_spritesheet.update(0)
 				self.moving_time = 0
 
 	def reverse(self):

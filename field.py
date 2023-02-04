@@ -82,7 +82,6 @@ class Field:
 					self.cells[tileY][tileX] = Tile(tile_image, False,
 													pygame.Vector2(tileX * self.tile_size, tileY * self.tile_size),
 													True)
-
 		for row in self.cells:
 			for cell in row:
 				cell.display(self.MAP)
@@ -122,7 +121,7 @@ class Field:
 			tile.blit(tile_image,(-i*16,-32))
 			self.walls.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
 		for i in range(2):
-			tile = pygame.surface.Surface((16,16))
+			tile = pygame.surface.Surface((16,16),pygame.SRCALPHA)
 			tile.blit(tile_image,(-i*16,-48))
 			self.box_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
 		for i in range(4):
