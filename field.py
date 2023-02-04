@@ -16,6 +16,7 @@ class Field:
 		self.load_tiles('Images/tiles.png')
 		self.wallProbabilities = [48, 48, 4]
 		self.groundProbabilities = [86, 5, 5, 2, 2] # For 100 tiles, 48 will be of idx[0]...
+		self.laser_images = None
 
 	def generate_map(self):
 		# Walls
@@ -33,7 +34,7 @@ class Field:
 		for tileX in range(1,self.MAP_SIZE[0]+1):  # Bottom line
 			idx = self.generate_rand_wall_idx()
 
-			if idx == 2:  # Add leak on top of wall)
+			if idx == 2:  # Add leak on top of wall
 				self.cells[self.MAP_SIZE[1]+1][tileX] = Tile("pipe", True, pygame.Vector2(tileX * self.tile_size, (self.MAP_SIZE[1]+1)*self.tile_size), False)
 				self.cells[self.MAP_SIZE[1] + 1][tileX].rotate(180)
 				self.cells[self.MAP_SIZE[1]][tileX] = Tile(self.leak_images[2], False,

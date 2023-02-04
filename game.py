@@ -5,6 +5,7 @@ import pygame
 from player import Player
 from box import Box
 from field import Field
+from laser import Laser
 
 class Game:
 	def __init__(self, window: pygame.surface.Surface, level_nb: int):
@@ -49,4 +50,6 @@ class Game:
 		self.field.update(self.dt, self.window)
 
 		for item in self.reversable_objects:
+			item.display(self.dt)
+		for item in self.non_reversible_objects:
 			item.display(self.dt)
