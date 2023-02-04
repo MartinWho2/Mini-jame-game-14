@@ -23,7 +23,7 @@ class Animated_Item(Item):
 			offset.y = self.direction.y * self.case_width * (1 - self.moving_time / self.true_moving_time)
 
 		self.window.blit(image, (self.position.x * self.case_width + self.map_offset_x - offset.x ,
-					self.position.y * self.case_width + self.map_offset_y - offset.y))
+								 (self.position.y-0.75) * self.case_width + self.map_offset_y - offset.y))
 		if self.moving:
 			self.moving_time += dt
 			if self.moving_time > self.true_moving_time :

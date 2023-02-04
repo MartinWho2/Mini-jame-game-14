@@ -6,54 +6,48 @@ class Player(Animated_Item):
 		super().__init__(window, original_position, ['monster','WalkingLeft','WalkingRight', 'WalkingUp', 'WalkingDown'], [True, True, True, True, True], grid)
 		self.type = 'player'
 
-	def move(self, direction, item_list):
-		pushing = False
-		blocked = False
-		if self.direction == (-1, 0):
-			if self.position.x > 0:
+	def move(self, direction):
+		self.direction = direction
+		next_cell = self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].can_enter()
+		if next_cell == 1:
+			print("empty")
+			self.grid[int(self.position.x)][int(self.position.y)].leave(self)
+			self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].enter(self)
+			if self.direction == (-1, 0):
 				self.active_spritesheet = "WalkingLeft"
-			else:
-				blocked = True
-		elif self.direction == (1, 0):
-			if self.position.x < 9:
-				self.active_spritesheet = "WalkingRight"
-			else:
-				blocked = True
-		elif self.direction == (0, -1):
-				if self.position.y > 0:
+			elif self.direction == (1, 0):
+					self.active_spritesheet = "WalkingRight"
+			elif self.direction == (0, -1):
 					self.active_spritesheet = "WalkingUp"
-				else:
-					blocked = True
-		elif self.direction == (0, 1):
-			if self.position.y < 9:
+			elif self.direction == (0, 1):
 				self.active_spritesheet = "WalkingDown"
-			else:
-				blocked = True
 
-
-		for item in item_list:
-			if item.type == 'box':
-				if (self.position+direction).x == item.position.x and (self.position+direction).y == item.position.y:
-					pushing = True
-					if 1<(self.position+direction).x<8 or not 1<(self.position+direction).y<8:
-						for item2 in item_list:
-							if item2.type == 'box':
-								if (self.position + 2*direction).x == item.position.x and (self.position + 2*direction).y == item.position.y:
-									blocked = True
-					else:
-						blocked = True
-
-					if not blocked:
-						self.position += direction
-						self.moving = True
-						item.move(self.direction)
-					else:
-						print("blocked")
-						self.active_spritesheet = "monster"
-		if not pushing:
 			self.position += direction
+			self.movements.append(self.direction)
 			self.moving = True
+		elif next_cell == 2:
+			print("case occupée")
+			if self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].can_enter() == 1:
+				self.active_tile.leave(self)
+				self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].enter(self)
+				if self.direction == (-1, 0):
+					self.active_spritesheet = "WalkingLeft"
+				elif self.direction == (1, 0):
+					self.active_spritesheet = "WalkingRight"
+				elif self.direction == (0, -1):
+					self.active_spritesheet = "WalkingUp"
+				elif self.direction == (0, 1):
+					self.active_spritesheet = "WalkingDown"
+				self.position += direction
+				self.movements.append(self.direction)
+				self.moving = True
+				box = self.grid[int(self.position.x)][int(self.position.y)].get_box()
+				box.move(self.direction)
+		else:
+			print(next_cell)
+			print("case bloquée")
+			self.moving = False
 
-	def use_reverse(self, object_to_reverse):
+	def reverse(self):
 		pass
 

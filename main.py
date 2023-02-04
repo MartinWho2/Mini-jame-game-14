@@ -22,13 +22,20 @@ while playing:
 		if e.type == pygame.KEYDOWN:
 			if not game.player.moving:
 				if e.key == pygame.K_w:
-					game.player.move(pygame.math.Vector2(0,-1), game.level_objects)
+					game.player.move(pygame.math.Vector2(0,-1))
 				elif e.key == pygame.K_a:
-					game.player.move(pygame.math.Vector2(-1,0), game.level_objects)
+					game.player.move(pygame.math.Vector2(-1,0))
 				elif e.key == pygame.K_s:
-					game.player.move(pygame.math.Vector2(0,1), game.level_objects)
+					game.player.move(pygame.math.Vector2(0,1))
 				elif e.key == pygame.K_d:
-					game.player.move(pygame.math.Vector2(1,0), game.level_objects)
+					game.player.move(pygame.math.Vector2(1,0))
+
+		# Check collision with item
+		if e.type == pygame.MOUSEBUTTONUP:
+			mouse_pos = e.pos
+			mouse_pos = (int(mouse_pos[0] / game.tile_size), int(mouse_pos[1] / game.tile_size))
+			for item in game.field.cells[mouse_pos[1]][mouse_pos[0]].objects_on_it:
+				item.reverse()
 
 
 	pygame.display.flip()
