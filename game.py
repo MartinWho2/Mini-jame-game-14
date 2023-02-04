@@ -3,6 +3,7 @@ import random
 
 import pygame
 from player import Player
+from guard import Guard
 from box import Box
 from field import Field
 from laser import Laser
@@ -22,13 +23,16 @@ class Game:
 		self.MAP_SIZE = (10,10)
 		self.field = Field(self.MAP_SIZE,self.tile_size)
 		self.field.generate_map()
+		self.map_offset = pygame.Vector2(0,0)
 
-		self.player = Player(self.window, pygame.math.Vector2(5, 5),self.field.cells)
-		self.box1 = Box(self.window, pygame.math.Vector2(7, 7), self.field.box_images,self.field.cells)
-		self.box2 = Box(self.window, pygame.math.Vector2(8, 7),self.field.box_images,self.field.cells)
-		self.level_objects.add(self.player)
-		self.level_objects.add(self.box1)
-		self.level_objects.add(self.box2)
+		self.player = Player(self.window, pygame.math.Vector2(5, 5),self.field.cells, self.map_offset)
+		self.guard1 = Guard(self.window, pygame.math.Vector2(8, 9), self.field.cells, self.map_offset)
+		self.box1 = Box(self.window, pygame.math.Vector2(7, 7), self.field.box_images,self.field.cells, self.map_offset)
+		self.box2 = Box(self.window, pygame.math.Vector2(8, 7),self.field.box_images,self.field.cells, self.map_offset)
+		self.reversable_objects.add(self.player)
+		self.reversable_objects.add(self.guard1)
+		self.reversable_objects.add(self.box1)
+		self.reversable_objects.add(self.box2)
 
 	def generate_level(self):
 		self.read_level_file(self.level_strings[self.level_nb-1])

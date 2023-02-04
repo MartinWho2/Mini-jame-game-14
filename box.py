@@ -2,8 +2,8 @@ import pygame
 from normal_item import Normal_Item
 
 class Box(Normal_Item):
-	def __init__(self, window, original_position, images, grid):
-		super().__init__(window, True, original_position, images, grid)
+	def __init__(self, window, original_position, images, grid, offset: pygame.Vector2):
+		super().__init__(window, True, original_position, images, grid, offset)
 		self.type = 'box'
 
 	def move(self, direction):

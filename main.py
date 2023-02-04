@@ -20,7 +20,7 @@ while playing:
 			pygame.quit()
 			playing = False
 		if e.type == pygame.KEYDOWN:
-			if not game.player.moving:
+			if not game.player.moving and not game.player.reversing:
 				if e.key == pygame.K_w:
 					game.player.move(pygame.math.Vector2(0,-1))
 				elif e.key == pygame.K_a:
@@ -33,8 +33,10 @@ while playing:
 		# Check collision with item
 		if e.type == pygame.MOUSEBUTTONUP:
 			mouse_pos = e.pos
-			mouse_pos = (int(mouse_pos[0] / game.tile_size), int(mouse_pos[1] / game.tile_size))
-			for item in game.field.cells[mouse_pos[1]][mouse_pos[0]].objects_on_it:
+			mouse_pos = (int((mouse_pos[0]-game.map_offset[0]) / game.tile_size), int((mouse_pos[1]-game.map_offset[1]) / game.tile_size))
+			print(mouse_pos)
+			print(game.field.cells[mouse_pos[0]][mouse_pos[1]].objects_on_it)
+			for item in game.field.cells[mouse_pos[0]][mouse_pos[1]].objects_on_it:
 				item.reverse()
 
 
