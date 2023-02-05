@@ -14,11 +14,13 @@ class Item(pygame.sprite.Sprite):
 		self.direction = pygame.math.Vector2(0, 0)
 		self.reversed = False
 		self.reversing = False
+		self.active_tile = None
 		self.movements = []
 		self.tile_size = 64
 		self.map_offset = offset
 		self.grid = grid
 		self.grid[int(self.position.x)][int(self.position.y)].enter(self)
 		self.particles_spritesheet = Spritesheet('reverse_particle', True, True)
+		self.type = ""
 
 

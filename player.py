@@ -1,6 +1,6 @@
 import pygame
 from animated_item import Animated_Item
-
+from exit_door import Exit_Door
 class Player(Animated_Item):
 	def __init__(self, window, original_position, grid, offset: pygame.Vector2):
 		reverse_image = pygame.image.load('Images/Reverse_Idle.png')
@@ -43,12 +43,9 @@ class Player(Animated_Item):
 				box = self.grid[int(self.position.x)][int(self.position.y)].get_box()
 				box.move(self.direction)
 
-				if self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].can_enter() == 4:
-					# Box moving against laser
-					self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].objects_on_it = [] # NOT FINAL
-			
-		elif next_cell == 4:
-			print('THe player is DEAD.')
+				# In case box collides with laser
+				for tower in self.towers:
+					tower.update()
 		else:
 			print(next_cell)
 			self.moving = False

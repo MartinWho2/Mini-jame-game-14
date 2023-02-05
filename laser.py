@@ -14,7 +14,10 @@ class Tower(Animated_Item):
 		self.tuple_directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 		self.sprite_group = non_reversible_objects
 		self.lasers = pygame.sprite.Group()
-		self.walkable = False
+		self.first_laser = None
+		self.num_lasers = 0
+		self.state = not state
+
 		try:
 			self.direction_text = self.directions[self.tuple_directions.index(direction)]
 		except:
@@ -33,17 +36,44 @@ class Tower(Animated_Item):
 		else:
 			self.active_spritesheet = f'laser_idle_{self.direction_text}'
 
+	def update(self):
+		if self.shooting:
+			new_coords = (int(self.position.x +self.direction[0]), int(self.position.y +self.direction[1]))
+			walkable = self.cells[new_coords[0]][new_coords[1]].walkable
+			empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
+			empty_cell = empty_cell and (self.cells[new_coords[0]][new_coords[1]].get_wall() is None)
+			number_of_free_tiles = 0
+
+			while walkable and empty_cell:
+				number_of_free_tiles += 1
+				new_coords= (new_coords[0] + self.direction[0], new_coords[1] + self.direction[1])
+				walkable = self.cells[new_coords[0]][new_coords[1]].walkable
+				print(self.cells[new_coords[0]][new_coords[1]].can_enter())
+				empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
+
+			if number_of_free_tiles != self.num_lasers:
+				self.create_lasers()
+				self.num_lasers = number_of_free_tiles
+
 	def create_lasers(self):
-		new_coords = (int(self.position.x +self.direction[0]),int(self.position.y +self.direction[1]))
+		print("new fancy lasers")
+		self.remove_all_lasers()
+		print(f"There are {len(self.lasers)} lasers")
+		new_coords = (int(self.position.x + self.direction[0]), int(self.position.y + self.direction[1]))
 		walkable = self.cells[new_coords[0]][new_coords[1]].walkable
-		empty_cell = self.cells[new_coords[0]][new_coords[1]].can_enter() == 1
+		empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
 
 		while walkable and empty_cell:
-			self.lasers.add(Laser(self.window, self.direction, new_coords, self.cells, self.map_offset,self))
-			new_coords = (new_coords[0]+self.direction[0], new_coords[1]+self.direction[1])
+			laser = Laser(self.window,self.direction,pygame.Vector2(new_coords[0],new_coords[1]),self.grid,self.map_offset,self.lasers)
+			self.lasers.add(laser)
 
+			new_coords = (int(new_coords[0] + self.direction[0]), int(new_coords[1] + self.direction[1]))
 			walkable = self.cells[new_coords[0]][new_coords[1]].walkable
 			empty_cell = self.cells[new_coords[0]][new_coords[1]].can_enter() == 1
+
+	def remove_all_lasers(self):
+		for laser in self.lasers:
+			laser.get_out()
 
 	def shoot(self, dt):
 		self.create_lasers()
@@ -54,11 +84,13 @@ class Tower(Animated_Item):
 			laser.display(dt)
 
 class Laser(Animated_Item):
-	def __init__(self, window, direction: tuple[int, int], pos: pygame.Vector2, grid, offset, tower: Tower):
+	def __init__(self, window, direction: tuple[int, int], pos: pygame.Vector2, grid, offset, sprite_group:pygame.sprite.Group):
 		super().__init__(window, 'laser', pygame.Vector2(pos[0], pos[1]),['laser'], [True], grid, offset, None)
 		self.direction = direction
-		self.tower = tower
+		self.next_laser = None
 		spriteSheet = self.spritesheets[self.active_spritesheet]
+		self.sprite_group = sprite_group
+		self.sprite_group.add(self)
 
 		if self.direction[0] == 0:
 			if self.direction[0] == 1:
@@ -68,3 +100,18 @@ class Laser(Animated_Item):
 		else:
 			if self.direction[0] == -1:
 				spriteSheet.rotate_spritesheet(180)
+
+	def create_next_lasers(self):
+		new_pos = (int(self.position.x+self.direction[0]),int(self.position.y+self.direction[1]))
+		print(new_pos, self.grid[new_pos[1]][new_pos[0]].can_enter(),self.grid[new_pos[1]][new_pos[0]].objects_on_it)
+		if self.grid[new_pos[1]][new_pos[0]].can_enter() not in {0,2}:
+			self.next_laser = Laser(self.window,self.direction,pygame.Vector2(int(new_pos[0]),int(new_pos[1])),self.grid,self.map_offset, self.sprite_group)
+			self.next_laser.create_next_lasers()
+
+	def create_laser(self):
+		self.active_tile.enter(self)
+		self.sprite_group.add(self)
+
+	def get_out(self):
+		self.active_tile.leave(self)
+		self.kill()

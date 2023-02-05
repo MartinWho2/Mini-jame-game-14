@@ -26,7 +26,7 @@ class Animated_Item(Item):
 				if self.type == 'player':
 					self.active_spritesheet = "Idle"
 				elif self.type == 'guard':
-					self.active_spritesheet = "LeGardienIdle"
+					self.active_spritesheet = "gardien_idle_"+self.dir_to_str(self.direction)
 				image = self.spritesheets[self.active_spritesheet].update(0)
 			move_offset = pygame.Vector2(0,0)
 			if self.moving:
@@ -49,7 +49,7 @@ class Animated_Item(Item):
 					if self.type == 'player':
 						self.active_spritesheet = "Idle"
 					elif self.type == 'guard':
-						self.active_spritesheet = "LeGardienIdle"
+						self.active_spritesheet = "gardien_idle_"+self.dir_to_str(self.direction)
 					self.spritesheets[self.active_spritesheet].update(0)
 		else:
 			particles_image = self.particles_spritesheet.update(dt)

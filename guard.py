@@ -5,7 +5,7 @@ class Guard(Animated_Item):
 	def __init__(self, window, original_position, grid, offset: pygame.Vector2, path: list[pygame.Vector2]):
 		reverse_image = pygame.image.load('Images/Reverse_Idle.png')
 		reverse_image = pygame.transform.scale(reverse_image,(reverse_image.get_width() * 4, reverse_image.get_height() * 4))
-		super().__init__(window, 'guard', original_position, ['LeGardienIdle', 'LeGardienGauche', 'LeGardienDroite', 'LeGardienUp', 'LeGardienDown'], [True, False, False, False, False], grid, offset, reverse_image)
+		super().__init__(window, 'guard', original_position, ['gardien_idle_down',"gardien_idle_up","gardien_idle_right","gardien_idle_left", 'LeGardienGauche', 'LeGardienDroite', 'LeGardienUp', 'LeGardienDown'], [True,True,True,True, False, False, False, False], grid, offset, reverse_image)
 		self.alert = False
 		self.path = path
 		self.path_count = 0
@@ -32,14 +32,15 @@ class Guard(Animated_Item):
 				elif self.direction == (0, 1):
 					self.active_spritesheet = "LeGardienDown"
 				else:
-					self.active_spritesheet = "LeGardienIdle"
+
+					self.active_spritesheet = "gardien_idle_" + self.dir_to_str(self.direction)
 
 
 				self.position += self.direction
 				self.movements.append(self.direction)
 				self.moving = True
 			else:
-				self.active_spritesheet = "LeGardienIdle"
+				self.active_spritesheet = "gardien_idle_" + self.dir_to_str(self.direction)
 				self.movements.append(self.direction)
 			self.visible_tiles.clear()
 			self.find_visible_tiles()

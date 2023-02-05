@@ -133,6 +133,9 @@ class Field:
 		self.corner = pygame.surface.Surface((16,16))
 		self.corner.blit(tile_image,(-64,-16))
 		self.corner = pygame.transform.scale(self.corner,(self.tile_size,self.tile_size))
+		self.exit_door = pygame.surface.Surface((16,16))
+		self.exit_door.blit(tile_image,(-64,-32))
+		self.exit_door = pygame.transform.scale(self.exit_door,(self.tile_size,self.tile_size))
 		
 
 class Tile(pygame.sprite.Sprite):
@@ -157,7 +160,7 @@ class Tile(pygame.sprite.Sprite):
 		# 0 : cannot, 1: nothing on it, 2: box on it...
 		if self.walkable:
 			for item in self.objects_on_it:
-				if item.type == 'box':
+				if item.type == 'box' and not item.fallen:
 					return 2
 				if item.type == 'player':
 					return 3
@@ -166,10 +169,14 @@ class Tile(pygame.sprite.Sprite):
 				if item.type == 'guard':
 					return 5
 			return 1
+
 		return 0
 
 	def enter(self, item):
-		self.objects_on_it.append(item)
+		if item in self.objects_on_it:
+			print("OBJECT ALREADY ON IT")
+		else:
+			self.objects_on_it.append(item)
 		item.active_tile = self
 
 	def leave(self,item):
@@ -180,4 +187,34 @@ class Tile(pygame.sprite.Sprite):
 		for item in self.objects_on_it:
 			if item.type == 'box':
 				return item
-		raise TypeError
+		return None
+
+	def get_hole(self):
+		for item in self.objects_on_it:
+			if item.type == 'hole':
+				return item
+		return None
+
+	def get_button(self):
+		for item in self.objects_on_it:
+			if item.type == 'button':
+				return item
+		return None
+
+	def get_laser(self):
+		for item in self.objects_on_it:
+			if item.type == 'laser':
+				return item
+		return None
+
+	def get_wall(self):
+		for item in self.objects_on_it:
+			if item.type == 'wall':
+				return item
+		return None
+
+	def get_flag(self):
+		for item in self.objects_on_it:
+			if item.type == 'flag':
+				return item
+		return None
