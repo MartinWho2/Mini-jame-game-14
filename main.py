@@ -15,6 +15,7 @@ if game.music_on:
 	game.menu_music.play(-1)
 while playing:
 	window.fill("pink")
+
 	game.update()
 	for e in pygame.event.get():
 		if e.type == pygame.QUIT:

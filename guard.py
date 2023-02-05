@@ -1,5 +1,6 @@
 import pygame
 from animated_item import Animated_Item
+pygame.mixer.init()
 
 class Guard(Animated_Item):
 	def __init__(self, window, original_position, grid, offset: pygame.Vector2, path: list[pygame.Vector2]):
@@ -11,6 +12,8 @@ class Guard(Animated_Item):
 		self.path_count = 0
 		self.visible_tiles = []
 		self.light_image = pygame.rect.Rect(0,0,self.tile_size,self.tile_size)
+
+		self.surprise_sound = pygame.mixer.Sound('sounds/Surprise.wav')
 
 	def move(self):
 		if not self.alert:

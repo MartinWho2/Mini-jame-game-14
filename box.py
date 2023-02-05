@@ -8,6 +8,8 @@ class Box(Normal_Item):
 		self.dragging_sound = pygame.mixer.Sound('sounds/Box_pushed.wav')
 
 	def move(self, direction):
+		if self.moving:
+			self.dragging_sound.play(0)
 		self.direction = direction
 		self.moving = True
 		self.position += direction
