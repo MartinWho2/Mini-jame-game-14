@@ -9,7 +9,13 @@ from guard import Guard
 from box import Box
 from field import Field
 from laser import Tower
-
+from hole import Hole
+from button import Button
+from door import Door
+from walls import Wall
+from flag import Flag
+from text_button import TextButton
+from field import Tile
 class Game:
 	def __init__(self, window: pygame.surface.Surface, level_nb: int):
 		# Levels
@@ -24,10 +30,12 @@ class Game:
 		self.window = window
 		self.tile_size = 64
 		self.level_nb = level_nb
-		self.level_strings = ['level_1', 'level_2']
+		self.level_strings = ['1', '2','3','4','5','6','7','8']
 		self.grid = []
 		self.reversable_objects = pygame.sprite.Group()
 		self.guards = pygame.sprite.Group()
+		self.towers = pygame.sprite.Group()
+		self.buttons = pygame.sprite.Group()
 		self.non_reversible_objects = pygame.sprite.Group()
 		self.time = pygame.time.get_ticks()
 		self.dt = 0

@@ -3,7 +3,7 @@ from animated_item import Animated_Item
 from spritesheet import Spritesheet
 
 class Tower(Animated_Item):
-	def __init__(self, window:pygame.Surface, position: pygame.Vector2, cells, offset: pygame.Vector2, direction: tuple[int, int], non_reversible_objects):
+	def __init__(self, window:pygame.Surface, state, position: pygame.Vector2, cells, offset: pygame.Vector2, direction: tuple[int, int], non_reversible_objects):
 		super().__init__(window, 'tower', position, ['laser_idle_down', 'laser_idle_right', 'laser_idle_up', 'laser_idle_left', 'laser_shooting_down', 'laser_shooting_right', 'laser_shooting_up', 'laser_shooting_left'],
 						 [True, True, True, True, True, True, True, True], cells, offset, None)
 		self.cells = cells
@@ -27,14 +27,18 @@ class Tower(Animated_Item):
 			self.active_spritesheet = f'laser_shooting_{self.direction_text}'
 			self.create_lasers()
 			print(len(self.lasers))
+		self.update()
 
 	def change_state(self):
+		self.state = not self.state
 		self.shooting = not self.shooting
 
 		if self.active_spritesheet == f'laser_idle_{self.direction_text}':
 			self.active_spritesheet = f'laser_shooting_{self.direction_text}'
+			self.create_lasers()
 		else:
 			self.active_spritesheet = f'laser_idle_{self.direction_text}'
+			self.remove_all_lasers()
 
 	def update(self):
 		if self.shooting:

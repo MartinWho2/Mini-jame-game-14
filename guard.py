@@ -11,6 +11,7 @@ class Guard(Animated_Item):
 		self.path = path
 		self.path_count = 0
 		self.visible_tiles = []
+		self.find_visible_tiles()
 		self.light_image = pygame.rect.Rect(0,0,self.tile_size,self.tile_size)
 
 		self.surprise_sound = pygame.mixer.Sound('sounds/Surprise.wav')
@@ -45,15 +46,20 @@ class Guard(Animated_Item):
 			else:
 				self.active_spritesheet = "gardien_idle_" + self.dir_to_str(self.direction)
 				self.movements.append(self.direction)
-			self.visible_tiles.clear()
 			self.find_visible_tiles()
-			self.detect_player()
+			if self.detect_player():
+				pygame.time.wait(1000)
+				return 1
 
 
 	def detect_player(self):
 		for tile in self.visible_tiles:
 			if self.grid[tile[0]][tile[1]].can_enter()==3:
-				print("joueur détecté")
+				if not self.alert:
+					self.surprise_sound.play(0)
+				return 1
+		return 0
+
 
 
 	def find_visible_tiles(self):
@@ -61,86 +67,86 @@ class Guard(Animated_Item):
 		self.visible_tiles.clear()
 		self.visible_tiles.append((int(self.position.x),int(self.position.y)))
 		if self.direction.y == 1 or self.direction == (0, 0):
-			if self.grid[int(self.position.x+1)][int(self.position.y)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x+1)][int(self.position.y)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x+1),int(self.position.y)))
-				if self.grid[int(self.position.x + 1)][int(self.position.y+1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x + 1), int(self.position.y+1)))
-					if self.grid[int(self.position.x + 1)][int(self.position.y + 2)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x + 1), int(self.position.y + 2)))
-					if self.grid[int(self.position.x + 2)][int(self.position.y + 2)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x + 1)][int(self.position.y+1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x + 1), int(self.position.y+1)))
+				if self.grid[int(self.position.x + 1)][int(self.position.y + 2)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x + 1), int(self.position.y + 2)))
+					if self.grid[int(self.position.x + 2)][int(self.position.y + 2)].can_enter() in {1,3,4}:
 						self.visible_tiles.append((int(self.position.x + 2), int(self.position.y + 2)))
-			if self.grid[int(self.position.x-1)][int(self.position.y)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x-1)][int(self.position.y)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x - 1), int(self.position.y)))
-				if self.grid[int(self.position.x -1)][int(self.position.y+1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x -1), int(self.position.y+1)))
-					if self.grid[int(self.position.x - 1)][int(self.position.y + 2)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x - 1), int(self.position.y + 2)))
-					if self.grid[int(self.position.x - 2)][int(self.position.y + 2)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x -1)][int(self.position.y+1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x -1), int(self.position.y+1)))
+				if self.grid[int(self.position.x - 1)][int(self.position.y + 2)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x - 1), int(self.position.y + 2)))
+					if self.grid[int(self.position.x - 2)][int(self.position.y + 2)].can_enter() in {1,3,4}:
 						self.visible_tiles.append((int(self.position.x - 2), int(self.position.y + 2)))
-			if self.grid[int(self.position.x)][int(self.position.y+1)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x)][int(self.position.y+1)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x), int(self.position.y+1)))
-				if self.grid[int(self.position.x)][int(self.position.y+2)].can_enter() in {1,3}:
+				if self.grid[int(self.position.x)][int(self.position.y+2)].can_enter() in {1,3,4}:
 					self.visible_tiles.append((int(self.position.x),int(self.position.y + 2)))
 		if self.direction.y == -1:
-			if self.grid[int(self.position.x+1)][int(self.position.y)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x+1)][int(self.position.y)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x+1),int(self.position.y)))
-				if self.grid[int(self.position.x + 1)][int(self.position.y-1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x + 1), int(self.position.y-1)))
-					if self.grid[int(self.position.x + 1)][int(self.position.y - 2)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x + 1), int(self.position.y - 2)))
-					if self.grid[int(self.position.x + 2)][int(self.position.y - 2)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x + 1)][int(self.position.y-1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x + 1), int(self.position.y-1)))
+				if self.grid[int(self.position.x + 1)][int(self.position.y - 2)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x + 1), int(self.position.y - 2)))
+					if self.grid[int(self.position.x + 2)][int(self.position.y - 2)].can_enter() in {1,3,4}:
 						self.visible_tiles.append((int(self.position.x + 2), int(self.position.y - 2)))
-			if self.grid[int(self.position.x-1)][int(self.position.y)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x-1)][int(self.position.y)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x - 1), int(self.position.y)))
-				if self.grid[int(self.position.x -1)][int(self.position.y-1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x -1), int(self.position.y-1)))
-					if self.grid[int(self.position.x - 1)][int(self.position.y - 2)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x - 1), int(self.position.y - 2)))
-					if self.grid[int(self.position.x - 2)][int(self.position.y - 2)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x -1)][int(self.position.y-1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x -1), int(self.position.y-1)))
+				if self.grid[int(self.position.x - 1)][int(self.position.y - 2)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x - 1), int(self.position.y - 2)))
+					if self.grid[int(self.position.x - 2)][int(self.position.y - 2)].can_enter() in {1,3,4}:
 						self.visible_tiles.append((int(self.position.x - 2), int(self.position.y - 2)))
-			if self.grid[int(self.position.x)][int(self.position.y-1)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x)][int(self.position.y-1)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x), int(self.position.y-1)))
-				if self.grid[int(self.position.x)][int(self.position.y-2)].can_enter() in {1,3}:
+				if self.grid[int(self.position.x)][int(self.position.y-2)].can_enter() in {1,3,4}:
 					self.visible_tiles.append((int(self.position.x),int(self.position.y - 2)))
 		if self.direction.x == 1:
-			if self.grid[int(self.position.x)][int(self.position.y+1)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x)][int(self.position.y+1)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x),int(self.position.y+1)))
-				if self.grid[int(self.position.x + 1)][int(self.position.y+1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x + 1), int(self.position.y+1)))
-					if self.grid[int(self.position.x + 2)][int(self.position.y + 1)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x + 2), int(self.position.y + 1)))
-					if self.grid[int(self.position.x + 2)][int(self.position.y + 2)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x + 1)][int(self.position.y+1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x + 1), int(self.position.y+1)))
+				if self.grid[int(self.position.x + 2)][int(self.position.y + 1)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x + 2), int(self.position.y + 1)))
+					if self.grid[int(self.position.x + 2)][int(self.position.y + 2)].can_enter() in {1,3,4}:
 						self.visible_tiles.append((int(self.position.x + 2), int(self.position.y + 2)))
-			if self.grid[int(self.position.x)][int(self.position.y-1)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x)][int(self.position.y-1)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x), int(self.position.y-1)))
-				if self.grid[int(self.position.x +1)][int(self.position.y-1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x +1), int(self.position.y-1)))
-					if self.grid[int(self.position.x +2)][int(self.position.y + 2)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x + 2), int(self.position.y -1)))
-					if self.grid[int(self.position.x + 2)][int(self.position.y - 2)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x +1)][int(self.position.y-1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x +1), int(self.position.y-1)))
+				if self.grid[int(self.position.x +2)][int(self.position.y + 2)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x + 2), int(self.position.y -1)))
+					if self.grid[int(self.position.x + 2)][int(self.position.y - 2)].can_enter() in {1,3,4}:
 						self.visible_tiles.append((int(self.position.x + 2), int(self.position.y - 2)))
-			if self.grid[int(self.position.x+1)][int(self.position.y)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x+1)][int(self.position.y)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x+1), int(self.position.y)))
-				if self.grid[int(self.position.x+2)][int(self.position.y)].can_enter() in {1,3}:
+				if self.grid[int(self.position.x+2)][int(self.position.y)].can_enter() in {1,3,4}:
 					self.visible_tiles.append((int(self.position.x+2),int(self.position.y)))
 		if self.direction.x == -1:
-			if self.grid[int(self.position.x)][int(self.position.y+1)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x)][int(self.position.y+1)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x),int(self.position.y+1)))
-				if self.grid[int(self.position.x - 1)][int(self.position.y+1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x - 1), int(self.position.y+1)))
-					if self.grid[int(self.position.x - 2)][int(self.position.y + 1)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x - 2), int(self.position.y + 1)))
-					if self.grid[int(self.position.x - 2)][int(self.position.y + 2)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x - 2), int(self.position.y + 2)))
-			if self.grid[int(self.position.x)][int(self.position.y-1)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x - 1)][int(self.position.y+1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x - 1), int(self.position.y+1)))
+				if self.grid[int(self.position.x - 2)][int(self.position.y + 1)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x - 2), int(self.position.y + 1)))
+				if self.grid[int(self.position.x - 2)][int(self.position.y + 2)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x - 2), int(self.position.y + 2)))
+			if self.grid[int(self.position.x)][int(self.position.y-1)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x), int(self.position.y-1)))
-				if self.grid[int(self.position.x -1)][int(self.position.y-1)].can_enter() in {1,3}:
-					self.visible_tiles.append((int(self.position.x -1), int(self.position.y-1)))
-					if self.grid[int(self.position.x -2)][int(self.position.y + 2)].can_enter() in {1,3}:
-						self.visible_tiles.append((int(self.position.x - 2), int(self.position.y -1)))
-					if self.grid[int(self.position.x - 2)][int(self.position.y - 2)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x -1)][int(self.position.y-1)].can_enter() in {1,3,4}:
+				self.visible_tiles.append((int(self.position.x -1), int(self.position.y-1)))
+				if self.grid[int(self.position.x -2)][int(self.position.y + 2)].can_enter() in {1,3,4}:
+					self.visible_tiles.append((int(self.position.x - 2), int(self.position.y -1)))
+					if self.grid[int(self.position.x - 2)][int(self.position.y - 2)].can_enter() in {1,3,4}:
 						self.visible_tiles.append((int(self.position.x - 2), int(self.position.y - 2)))
-			if self.grid[int(self.position.x-1)][int(self.position.y)].can_enter() in {1,3}:
+			if self.grid[int(self.position.x-1)][int(self.position.y)].can_enter() in {1,3,4}:
 				self.visible_tiles.append((int(self.position.x-1), int(self.position.y)))
-				if self.grid[int(self.position.x-2)][int(self.position.y)].can_enter() in {1,3}:
+				if self.grid[int(self.position.x-2)][int(self.position.y)].can_enter() in {1,3,4}:
 					self.visible_tiles.append((int(self.position.x-2),int(self.position.y)))

@@ -18,6 +18,21 @@ class Animated_Item(Item):
 			self.visible_tiles = []
 			self.yellow_surf = pygame.surface.Surface((self.tile_size,self.tile_size),pygame.SRCALPHA)
 			self.yellow_surf.fill((250,250,0,50))
+		if self.type == 'player':
+			self.powering = False
+			self.powered_item = None
+			self.powering_time = 0
+			self.true_powering_time = 1000
+
+	def dir_to_str(self, dir: pygame.Vector2):
+		if dir == pygame.math.Vector2(0, -1):
+			return "up"
+		elif dir == pygame.math.Vector2(0, 1):
+			return "down"
+		elif dir == pygame.math.Vector2(-1, 0):
+			return "left"
+		elif dir == pygame.math.Vector2(1, 0):
+			return "right"
 
 	def display(self, dt):
 		if not self.reversing:
@@ -29,6 +44,7 @@ class Animated_Item(Item):
 					self.active_spritesheet = "gardien_idle_"+self.dir_to_str(self.direction)
 				image = self.spritesheets[self.active_spritesheet].update(0)
 			move_offset = pygame.Vector2(0,0)
+
 			if self.moving:
 				move_offset.x = self.direction.x * self.tile_size * (1 - self.moving_time / self.true_moving_time)
 				move_offset.y = self.direction.y * self.tile_size * (1 - self.moving_time / self.true_moving_time)
@@ -36,6 +52,15 @@ class Animated_Item(Item):
 				if self.type == 'guard':
 					for tile in self.visible_tiles:
 						self.window.blit(self.yellow_surf,(tile[0] * self.tile_size + self.map_offset.x, tile[1] * self.tile_size + self.map_offset.y))
+				elif self.type == 'player':
+					if self.powering:
+						print(image)
+						if self.active_spritesheet == 'Idle':
+							self.powering = False
+							self.spritesheets[self.active_spritesheet].reset()
+							self.active_spritesheet = "Idle"
+							self.powered_item.reverse()
+
 				self.window.blit(image, (self.position.x * self.tile_size + self.map_offset.x - move_offset.x,(self.position.y - 0.75) * self.tile_size + self.map_offset.y - move_offset.y))
 			else:
 				self.window.blit(image, (self.position.x * self.tile_size + self.map_offset.x - move_offset.x,
@@ -67,14 +92,14 @@ class Animated_Item(Item):
 				if len(self.movements) == 0:
 					self.position += self.direction
 					if self.position == self.original_position:
-						print("bonne position")
 						self.reversing = False
 						self.direction = pygame.math.Vector2(0, 0)
 						self.grid[int(self.original_position.x)][int(self.original_position.y)].enter(self)
 						self.particles_spritesheet.update(0)
+						if self.type == 'guard':
+							self.find_visible_tiles()
 					else:
 						difference = self.position - self.original_position
-						print("print de mes couilles", difference)
 						for i in range(int(abs(difference.x))):
 							if difference.x>0:
 								self.movements.append(pygame.math.Vector2(1 ,0))
@@ -85,7 +110,6 @@ class Animated_Item(Item):
 								self.movements.append(pygame.math.Vector2(0, 1))
 							else:
 								self.movements.append(pygame.math.Vector2(0, -1))
-						print(self.movements)
 						self.direction = -self.movements[-1]
 						self.particles_spritesheet.update(0)
 				else:

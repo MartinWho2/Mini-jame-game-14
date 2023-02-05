@@ -5,12 +5,20 @@ class Player(Animated_Item):
 	def __init__(self, window, original_position, grid, offset: pygame.Vector2):
 		reverse_image = pygame.image.load('Images/Reverse_Idle.png')
 		reverse_image =  pygame.transform.scale(reverse_image, (reverse_image.get_width()*4, reverse_image.get_height()*4))
-		super().__init__(window, 'player', original_position, ['Idle','WalkingLeft','WalkingRight', 'WalkingUp', 'WalkingDown'], [True, True, True, True, True], grid, offset, reverse_image)
+		super().__init__(window, 'player', original_position, ['Idle','WalkingLeft','WalkingRight', 'WalkingUp', 'WalkingDown', 'power'], [True, True, True, True, True, False], grid, offset, reverse_image)
+
+		self.death_sound = pygame.mixer.Sound('sounds/Death.wav')
+
+		self.number_of_reverses = 0
+		self.winning = False
 
 	def move(self, direction):
 		self.direction = direction
 		next_cell = self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].can_enter()
-		if next_cell == 1:
+		print("next cell: ", next_cell)
+		if self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].__class__.__name__== 'Exit_Door':
+			self.winning = True
+		if next_cell in {1,4,7,9,10}:
 			self.grid[int(self.position.x)][int(self.position.y)].leave(self)
 			self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].enter(self)
 			if self.direction == (-1, 0):
@@ -25,6 +33,14 @@ class Player(Animated_Item):
 			self.position += direction
 			self.movements.append(self.direction)
 			self.moving = True
+			if next_cell == 4:
+				return 1
+			elif next_cell == 7:
+				if not self.grid[int(self.position.x)][int(self.position.y)].get_hole().filled:
+					return 1
+			elif next_cell == 10:
+				self.grid[int(self.position.x)][int(self.position.y)].get_flag().remove_item()
+				self.number_of_reverses += 1
 		elif next_cell == 2:
 			if self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].can_enter() in {1,4,5}:
 				self.active_tile.leave(self)
@@ -42,6 +58,10 @@ class Player(Animated_Item):
 				self.moving = True
 				box = self.grid[int(self.position.x)][int(self.position.y)].get_box()
 				box.move(self.direction)
+				if following_cell == 7:
+					hole = self.grid[int(self.position.x+self.direction.x)][int(self.position.y+self.direction.y)].get_hole()
+					if not hole.filled:
+						hole.fall(box)
 
 				# In case box collides with laser
 				for tower in self.towers:
@@ -49,4 +69,13 @@ class Player(Animated_Item):
 		else:
 			print(next_cell)
 			self.moving = False
+		return 0
+
+	def power(self, item):
+		self.powering = True
+		self.powered_item = item
+		self.active_spritesheet = 'power'
+
+	def die(self):
+		self.death_sound.play(0)
 

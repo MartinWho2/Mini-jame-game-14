@@ -12,6 +12,10 @@ class Field:
 		self.walls = []
 		self.box_images = []
 		self.leak_images = [] # Will be loaded in load_tiles
+		self.hole_images = []
+		self.button_images = []
+		self.door_images = []
+		self.walls_images = []
 		self.corner = None
 		self.load_tiles('Images/tiles.png')
 		self.wallProbabilities = [48, 48, 4]
@@ -129,6 +133,31 @@ class Field:
 			tile = pygame.surface.Surface((16, 16))
 			tile.blit(tile_image, (-i*16, -80))
 			self.leak_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+		for i in range(1):
+			tile = pygame.Surface((16, 16))
+			tile.blit(tile_image, (-16, -16))
+			self.hole_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+			tile = pygame.Surface((16, 16))
+			tile.blit(tile_image, (-48, -16))
+			self.hole_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+		for i in range(2):
+			tile = pygame.Surface((16, 16),pygame.SRCALPHA)
+			tile.blit(tile_image, (-16*i, -64))
+			self.door_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+		for i in range(2):
+			tile = pygame.Surface((16, 16),pygame.SRCALPHA)
+			tile.blit(tile_image, (-32-16*i, -48))
+			self.button_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+		for i in range(3):
+			tile = pygame.Surface((16, 16))
+			tile.blit(tile_image, (-64,-48))
+			self.walls_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+			tile = pygame.Surface((16, 16))
+			tile.blit(tile_image, (-48, -64))
+			self.walls_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
+			tile = pygame.Surface((16, 16))
+			tile.blit(tile_image, (-64,-64))
+			self.walls_images.append(pygame.transform.scale(tile, (self.tile_size, self.tile_size)))
 
 		self.corner = pygame.surface.Surface((16,16))
 		self.corner.blit(tile_image,(-64,-16))
@@ -185,7 +214,7 @@ class Tile(pygame.sprite.Sprite):
 
 	def get_box(self):
 		for item in self.objects_on_it:
-			if item.type == 'box':
+			if item.type == 'box' and not item.fallen:
 				return item
 		return None
 

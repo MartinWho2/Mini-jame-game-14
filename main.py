@@ -22,21 +22,40 @@ while playing:
 			pygame.quit()
 			playing = False
 		if e.type == pygame.KEYDOWN:
-			if not game.player.moving and not game.player.reversing:
+			if not game.player.moving and not game.player.reversing and not game.player.powering and not game.menu:
 				if e.key == pygame.K_w:
-					game.player.move(pygame.math.Vector2(0,-1))
+					if game.player.move(pygame.math.Vector2(0,-1)):
+						game.restart()
+					for button in game.buttons:
+						print("refresh")
+						button.refresh()
 					for guard in game.guards:
-						guard.move()
+						if guard.move():
+							game.restart()
 				elif e.key == pygame.K_a:
-					game.player.move(pygame.math.Vector2(-1,0))
+					if game.player.move(pygame.math.Vector2(-1,0)):
+						game.restart()
+					for button in game.buttons:
+						print("refresh")
+						button.refresh()
 					for guard in game.guards:
-						guard.move()
+						if guard.move():
+							game.restart()
 				elif e.key == pygame.K_s:
-					game.player.move(pygame.math.Vector2(0,1))
+					if game.player.move(pygame.math.Vector2(0,1)):
+							game.restart()
+					for button in game.buttons:
+						print("refresh")
+						button.refresh()
 					for guard in game.guards:
-						guard.move()
+						if guard.move():
+							game.restart()
 				elif e.key == pygame.K_d:
-					game.player.move(pygame.math.Vector2(1,0))
+					if game.player.move(pygame.math.Vector2(1,0)):
+						game.restart()
+					for button in game.buttons:
+						print("refresh")
+						button.refresh()
 					for guard in game.guards:
 						if guard.move():
 							game.restart()
