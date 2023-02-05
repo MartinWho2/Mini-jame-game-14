@@ -73,7 +73,7 @@ class Tower(Animated_Item):
 
 			new_coords = (int(new_coords[0] + self.direction[0]), int(new_coords[1] + self.direction[1]))
 			walkable = self.cells[new_coords[0]][new_coords[1]].walkable
-			empty_cell = self.cells[new_coords[0]][new_coords[1]].can_enter() == 1
+			empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
 
 	def remove_all_lasers(self):
 		for laser in self.lasers:

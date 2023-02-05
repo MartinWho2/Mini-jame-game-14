@@ -191,12 +191,25 @@ class Tile(pygame.sprite.Sprite):
 			for item in self.objects_on_it:
 				if item.type == 'box' and not item.fallen:
 					return 2
-				if item.type == 'player':
+				elif item.type == 'player':
 					return 3
-				if item.type == 'laser':
+				elif item.type == 'laser':
 					return 4
-				if item.type == 'guard':
+				elif item.type == 'guard':
 					return 5
+				elif item.type == 'tower':
+					return 6
+				elif item.type == 'hole' and not item.filled:
+					return 7
+				elif item.type == 'door' and not item.state:
+					return 8
+				elif item.type == 'button' and not item.state:
+					return 9
+				elif item.type == 'flag' :
+					return 10
+				elif item.type == 'wall':
+					return 0
+
 			return 1
 
 		return 0
@@ -211,6 +224,12 @@ class Tile(pygame.sprite.Sprite):
 	def leave(self,item):
 		if item in self.objects_on_it:
 			self.objects_on_it.remove(item)
+
+			if item.type == 'box':
+				# If box is on laser
+				if item.on_laser is not None:
+					item.on_laser.create_laser()
+					item.on_laser = None
 
 	def get_box(self):
 		for item in self.objects_on_it:

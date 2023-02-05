@@ -1,5 +1,6 @@
 import os.path
 import random
+import json
 
 import pygame
 
@@ -189,18 +190,14 @@ class Game:
 		for i in range(2):
 			self.change_sfx_status()
 
-	def generate_level(self):
-		self.read_level_file(self.level_strings[self.level_nb-1])
+	def read_levels_file(self):
+		with open(self.levels_file,) as f:
+			levels = json.load(f)
 
-	@staticmethod
-	def read_level_file( file: str):
-		with open(file, "r") as f:
-			text = f.readline()
-			f.close()
-		## Create the map
+		return levels
 
 	def restart(self):
-		pass
+		self.generate_level()
 
 	def update(self):
 		if self.player.winning:
