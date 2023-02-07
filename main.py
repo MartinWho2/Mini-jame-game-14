@@ -59,9 +59,9 @@ while playing:
 					for guard in game.guards:
 						if guard.move():
 							game.restart()
-			elif game.menu:
-				if e.key == pygame.K_ESCAPE:
-					game.menu_screen = 0
+			if e.key == pygame.K_ESCAPE:
+				game.menu_screen = 0
+				game.menu = True
 		# Check collision with item
 		if e.type == pygame.MOUSEBUTTONUP:
 			if not game.menu:

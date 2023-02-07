@@ -16,7 +16,8 @@ class Tower(Animated_Item):
 		self.lasers = pygame.sprite.Group()
 		self.first_laser = None
 		self.num_lasers = 0
-		self.state = not state
+		self.state = state
+		self.first_change = False
 
 		try:
 			self.direction_text = self.directions[self.tuple_directions.index(direction)]
@@ -30,15 +31,18 @@ class Tower(Animated_Item):
 		self.update()
 
 	def change_state(self):
-		self.state = not self.state
-		self.shooting = not self.shooting
+		if self.first_change:
+			self.state = not self.state
+			self.shooting = not self.shooting
 
-		if self.active_spritesheet == f'laser_idle_{self.direction_text}':
-			self.active_spritesheet = f'laser_shooting_{self.direction_text}'
-			self.create_lasers()
+			if self.active_spritesheet == f'laser_idle_{self.direction_text}':
+				self.active_spritesheet = f'laser_shooting_{self.direction_text}'
+				self.create_lasers()
+			else:
+				self.active_spritesheet = f'laser_idle_{self.direction_text}'
+				self.remove_all_lasers()
 		else:
-			self.active_spritesheet = f'laser_idle_{self.direction_text}'
-			self.remove_all_lasers()
+			self.first_change = True
 
 	def update(self):
 		if self.shooting:
@@ -73,7 +77,7 @@ class Tower(Animated_Item):
 
 			new_coords = (int(new_coords[0] + self.direction[0]), int(new_coords[1] + self.direction[1]))
 			walkable = self.cells[new_coords[0]][new_coords[1]].walkable
-			empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
+			empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None and self.cells[new_coords[0]][new_coords[1]].can_enter() not in [0, 8]
 
 	def remove_all_lasers(self):
 		for laser in self.lasers:

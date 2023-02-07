@@ -133,6 +133,10 @@ class Game:
 		self.towers.empty()
 		self.buttons.empty()
 		self.non_reversible_objects = pygame.sprite.Group()
+		if self.level_nb == 9:
+			self.level_nb = 1
+			self.menu = True
+			self.menu_screen = 0
 		self.actual_level = self.levels[self.level_strings[self.level_nb-1]]
 
 		for coo in self.actual_level['flag']:
@@ -173,9 +177,9 @@ class Game:
 			self.towers.add(tower)
 			for button in self.actual_level['button']:
 				if button[2]==coo[2]:
-					button = Button(self.window, tower, pygame.math.Vector2(button[0], button[1]), self.field.button_images, self.field.cells, self.map_offset)
-					self.non_reversible_objects.add(button)
-					self.buttons.add(button)
+					button_sprite = Button(self.window, tower, pygame.math.Vector2(button[0], button[1]), self.field.button_images, self.field.cells, self.map_offset)
+					self.non_reversible_objects.add(button_sprite)
+					self.buttons.add(button_sprite)
 		for coo in self.actual_level['hole']:
 			hole = Hole(self.window, pygame.math.Vector2(coo[0], coo[1]), self.field.hole_images, self.field.cells, self.map_offset)
 			self.non_reversible_objects.add(hole)
