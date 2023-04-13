@@ -30,9 +30,12 @@ cd Mini-jame-game-14
 python main.py
 ```
 
-#Credits
+# Credits
 
 Coding : @Blacklight13579, @SpaWnELS, @MartinWho2 (me lol)
+
 Art : DonutGuy#4213 (discord)
+
 Levels : @Timeo21
+
 Music : Alextazie#4916 (discord)
