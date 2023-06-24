@@ -27,7 +27,8 @@ class Game:
 
 
 		self.menu = True
-		self.menu_screen = 0
+		self.spotted = 0 # 0 = not spotted, 1 = spotted and count until 5
+		self.menu_screen = 0 # 0 = menu, 1 = levels, 2 = settings
 		self.window = window
 		self.tile_size = 64
 		self.level_nb = level_nb

@@ -85,29 +85,34 @@ while playing:
 					except:
 						print('Mouse position probably out of the map')
 			else:
-				game.button_click_sound.play(0)
 				if game.menu_screen == 0:
 					if game.levels_button.rect.collidepoint(e.pos):
 						game.menu_screen = 2
+						game.button_click_sound.play(0)
 					elif game.settings_button.rect.collidepoint(e.pos):
 						game.menu_screen = 1
+						game.button_click_sound.play(0)
 					elif game.exit_button.rect.collidepoint(e.pos):
+						game.button_click_sound.play(0)
 						pygame.quit()
 						playing = False
+				elif game.menu_screen == 1:
+					if game.on_button_1.rect.collidepoint(e.pos):
+						game.button_click_sound.play(0)
+						game.change_sfx_status()
+					elif game.on_button_2.rect.collidepoint(e.pos):
+						game.button_click_sound.play(0)
+						game.change_music_status()
 				elif game.menu_screen == 2:
 					for i in range(8):
 						if game.level_buttons[i].rect.collidepoint(e.pos):
+							game.button_click_sound.play(0)
 							game.level_nb = i+1
 							game.generate_level()
 							print("loaded level "+str(i+1))
 							game.menu_music.stop()
 							game.game_music.play(-1)
 							game.menu = False
-				elif game.menu_screen == 1:
-					if game.on_button_1.rect.collidepoint(e.pos):
-						game.change_sfx_status()
-					elif game.on_button_2.rect.collidepoint(e.pos):
-						game.change_music_status()
 
 
 	pygame.display.flip()
