@@ -55,32 +55,6 @@ class Game:
 		self.game_music.set_volume(self.sound_volume)
 
 		self.player = Player(self.window, pygame.math.Vector2(5, 5), self.field.cells, self.map_offset, self.towers)
-		#path1 = self.get_guard_path('uuullllllllddddrrrrdruurrr')
-		# self.guard1 = Guard(self.window, pygame.math.Vector2(9, 5), self.field.cells, self.map_offset,
-		# 					self.guard_path_1, self.sfx_on)
-		# self.box1 = Box(self.window, pygame.math.Vector2(7, 7), self.field.box_images,self.field.cells, self.map_offset)
-		# self.box2 = Box(self.window, pygame.math.Vector2(8, 7),self.field.box_images,self.field.cells, self.map_offset)
-		# self.hole = Hole(self.window, pygame.math.Vector2(5, 8),self.field.hole_images,self.field.cells, self.map_offset)
-		# self.tower1 = Tower(self.window, True, pygame.math.Vector2(2, 2), self.field.cells, self.map_offset, (1, 0),self.towers)
-		# self.towers.add(self.tower1)
-		# self.door1 = Door(self.window, True, True, pygame.math.Vector2(4, 1), self.field.door_images, self.field.cells, self.map_offset)
-		# self.button1 = Button(self.window, self.tower1, pygame.math.Vector2(2, 4),self.field.button_images, self.field.cells, self.map_offset)
-		# self.button2 = Button(self.window, self.door1, pygame.math.Vector2(2, 6), self.field.button_images, self.field.cells, self.map_offset)
-		# self.reversable_objects.add(self.guard1)
-		# self.guards.add(self.guard1)
-		# self.buttons.add(self.button1)
-		# self.buttons.add(self.button2)
-		# self.reversable_objects.add(self.box1)
-		# self.reversable_objects.add(self.box2)
-		# self.reversable_objects.add(self.player)
-		#
-		# self.non_reversible_objects.add(self.hole)
-		# self.non_reversible_objects.add(self.door1)
-		# self.non_reversible_objects.add(self.button1)
-		# self.non_reversible_objects.add(self.button2)
-		#
-		# self.wall1 = Wall(self.window, 9, pygame.math.Vector2(9,9 ), self.field.walls_images, self.field.cells, self.map_offset)
-		# self.non_reversible_objects.add(self.wall1)
 
 		# Menu images
 		self.size_map = 12 * self.tile_size
@@ -90,16 +64,6 @@ class Game:
 		self.settings_image = pygame.transform.scale(self.settings_image,(self.size_map,self.size_map))
 		self.level_select_image = pygame.image.load(os.path.join("Images","level_selection_background.png"))
 		self.level_select_image = pygame.transform.scale(self.level_select_image, (self.size_map, self.size_map))
-		# self.settings_text =  pygame.image.load(os.path.join("Images","settings.png"))
-		# self.settings_text = pygame.transform.scale(self.settings_text, (self.settings_text.get_width()*4, self.settings_text.get_height()*4))
-		# self.exit_text =  pygame.image.load(os.path.join("Images","exit.png"))
-		# self.exit_text = pygame.transform.scale(self.exit_text, (self.exit_text.get_width()*4, self.exit_text.get_height()*4))
-		# self.levels_text =  pygame.image.load(os.path.join("Images","levels.png"))
-		# self.levels_text = pygame.transform.scale(self.levels_text, (self.levels_text.get_width()*4, self.levels_text.get_height()*4))
-		# self.button_off_image = pygame.image.load(os.path.join("Images","button_off.png"))
-		# self.button_off_image = pygame.transform.scale(self.button_off_image, (self.button_off_image.get_width()*4, self.button_off_image.get_height()*4))
-		# self.button_on_image = pygame.image.load(os.path.join("Images","button_on.png"))
-		# self.button_on_image = pygame.transform.scale(self.button_on_image, (self.button_on_image.get_width()*4, self.button_on_image.get_height()*4))
 		self.levels_button = TextButton(pygame.Vector2(3,3),"levels")
 		self.settings_button = TextButton(pygame.Vector2(2,7),"settings")
 		self.exit_button = TextButton(pygame.Vector2(7,9),"exit")
@@ -119,6 +83,8 @@ class Game:
 
 		self.music_on = True
 		self.sfx_on = True
+		self.change_music_status()
+		self.change_sfx_status()
 		self.levels = self.read_levels_file()
 		self.actual_level = None
 		self.reverse_font = pygame.font.SysFont('Arial',20)
@@ -184,8 +150,8 @@ class Game:
 			hole = Hole(self.window, pygame.math.Vector2(coo[0], coo[1]), self.field.hole_images, self.field.cells, self.map_offset)
 			self.non_reversible_objects.add(hole)
 		coo = self.actual_level['exit']
-		self.field.cells[coo[0]][coo[1]] = Exit_Door(self.field.exit_door,pygame.math.Vector2(coo[0]*self.tile_size, coo[1]*self.tile_size))
-		self.field.cells[coo[1]][coo[0]] = Tile(self.field.walls_images[0],False,pygame.math.Vector2(coo[1]*self.tile_size, coo[0]*self.tile_size),False)
+		self.field.cells[coo[1]][coo[0]] = Exit_Door(self.field.exit_door,pygame.math.Vector2(coo[0]*self.tile_size, coo[1]*self.tile_size))
+		# self.field.cells[coo[1]][coo[0]] = Tile(self.field.walls_images[0],False,pygame.math.Vector2(coo[1]*self.tile_size, coo[0]*self.tile_size),False)
 		coo = self.actual_level['spawn']
 		self.player = Player(self.window, pygame.math.Vector2(coo[0], coo[1]), self.field.cells, self.map_offset,
 							 self.towers)
@@ -197,7 +163,6 @@ class Game:
 	def read_levels_file(self):
 		with open(self.levels_file,) as f:
 			levels = json.load(f)
-
 		return levels
 
 	def restart(self):

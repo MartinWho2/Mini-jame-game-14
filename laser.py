@@ -47,17 +47,17 @@ class Tower(Animated_Item):
 	def update(self):
 		if self.shooting:
 			new_coords = (int(self.position.x +self.direction[0]), int(self.position.y +self.direction[1]))
-			walkable = self.cells[new_coords[0]][new_coords[1]].walkable
-			empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
-			empty_cell = empty_cell and (self.cells[new_coords[0]][new_coords[1]].get_wall() is None)
+			walkable = self.cells[new_coords[1]][new_coords[0]].walkable
+			empty_cell = self.cells[new_coords[1]][new_coords[0]].get_box() is None
+			empty_cell = empty_cell and (self.cells[new_coords[1]][new_coords[0]].get_wall() is None)
 			number_of_free_tiles = 0
 
 			while walkable and empty_cell:
 				number_of_free_tiles += 1
-				new_coords= (new_coords[0] + self.direction[0], new_coords[1] + self.direction[1])
-				walkable = self.cells[new_coords[0]][new_coords[1]].walkable
-				print(self.cells[new_coords[0]][new_coords[1]].can_enter())
-				empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
+				new_coords= (new_coords[1] + self.direction[1], new_coords[0] + self.direction[0])
+				walkable = self.cells[new_coords[1]][new_coords[0]].walkable
+				print(self.cells[new_coords[1]][new_coords[0]].can_enter())
+				empty_cell = self.cells[new_coords[1]][new_coords[0]].get_box() is None
 
 			if number_of_free_tiles != self.num_lasers:
 				self.create_lasers()
@@ -67,17 +67,17 @@ class Tower(Animated_Item):
 		print("new fancy lasers")
 		self.remove_all_lasers()
 		print(f"There are {len(self.lasers)} lasers")
-		new_coords = (int(self.position.x + self.direction[0]), int(self.position.y + self.direction[1]))
-		walkable = self.cells[new_coords[0]][new_coords[1]].walkable
-		empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None
+		new_coords = (int(self.position.y + self.direction[1]), int(self.position.x + self.direction[0]))
+		walkable = self.cells[new_coords[1]][new_coords[0]].walkable
+		empty_cell = self.cells[new_coords[1]][new_coords[0]].get_box() is None
 
 		while walkable and empty_cell:
 			laser = Laser(self.window,self.direction,pygame.Vector2(new_coords[0],new_coords[1]),self.grid,self.map_offset,self.lasers)
 			self.lasers.add(laser)
 
 			new_coords = (int(new_coords[0] + self.direction[0]), int(new_coords[1] + self.direction[1]))
-			walkable = self.cells[new_coords[0]][new_coords[1]].walkable
-			empty_cell = self.cells[new_coords[0]][new_coords[1]].get_box() is None and self.cells[new_coords[0]][new_coords[1]].can_enter() not in [0, 8]
+			walkable = self.cells[new_coords[1]][new_coords[0]].walkable
+			empty_cell = self.cells[new_coords[1]][new_coords[0]].get_box() is None and self.cells[new_coords[1]][new_coords[0]].can_enter() not in [0, 8]
 
 	def remove_all_lasers(self):
 		for laser in self.lasers:

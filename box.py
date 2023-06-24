@@ -15,4 +15,4 @@ class Box(Normal_Item):
 		self.position += direction
 		self.movements.append(direction)
 		self.active_tile.leave(self)
-		self.grid[int(self.position.x)][int(self.position.y)].enter(self)
+		self.grid[int(self.position.y)][int(self.position.x)].enter(self)

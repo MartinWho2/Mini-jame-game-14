@@ -6,5 +6,5 @@ class Flag(Animated_Item):
 		super().__init__(window, "flag", original_position, ["flag"],[True],grid, offset, None)
 
 	def remove_item(self):
-		self.grid[int(self.position.x)][int(self.position.y)].leave(self)
+		self.grid[int(self.position.y)][int(self.position.x)].leave(self)
 		self.kill()

@@ -19,7 +19,7 @@ class Item(pygame.sprite.Sprite):
 		self.tile_size = 64
 		self.map_offset = offset
 		self.grid = grid
-		self.grid[int(self.position.x)][int(self.position.y)].enter(self)
+		self.grid[int(self.position.y)][int(self.position.x)].enter(self)
 		self.particles_spritesheet = Spritesheet('reverse_particle', True, True)
 		self.type = ""
 

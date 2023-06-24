@@ -102,7 +102,7 @@ class Normal_Item(Item):
 					self.reversing = False
 					self.position = self.original_position
 					self.direction = pygame.math.Vector2(0, 0)
-					self.grid[int(self.original_position.x)][int(self.original_position.y)].enter(self)
+					self.grid[int(self.original_position.y)][int(self.original_position.x)].enter(self)
 					self.particles_spritesheet.update(0)
 				else:
 					self.position += self.direction
@@ -116,7 +116,7 @@ class Normal_Item(Item):
 			if self.type == 'box':
 				if self.fallen:
 					self.fallen = False
-					hole = self.grid[int(self.position.x)][int(self.position.y)].get_hole()
+					hole = self.grid[int(self.position.y)][int(self.position.x)].get_hole()
 					hole.filled = False
 			self.reversing = True
 			self.active_tile.leave(self)

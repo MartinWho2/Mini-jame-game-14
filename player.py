@@ -15,13 +15,13 @@ class Player(Animated_Item):
 
 	def move(self, direction):
 		self.direction = direction
-		next_cell = self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].can_enter()
+		next_cell = self.grid[int((self.position + self.direction).y)][int((self.position + self.direction).x)].can_enter()
 		print("next cell: ", next_cell)
-		if self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].__class__.__name__== 'Exit_Door':
+		if self.grid[int((self.position + self.direction).y)][int((self.position + self.direction).x)].__class__.__name__== 'Exit_Door':
 			self.winning = True
 		if next_cell in {1,4,7,9,10}:
-			self.grid[int(self.position.x)][int(self.position.y)].leave(self)
-			self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].enter(self)
+			self.grid[int(self.position.y)][int(self.position.x)].leave(self)
+			self.grid[int((self.position + self.direction).y)][int((self.position + self.direction).x)].enter(self)
 			if self.direction == (-1, 0):
 				self.active_spritesheet = "WalkingLeft"
 			elif self.direction == (1, 0):
@@ -37,17 +37,17 @@ class Player(Animated_Item):
 			if next_cell == 4:
 				return 1
 			elif next_cell == 7:
-				if not self.grid[int(self.position.x)][int(self.position.y)].get_hole().filled:
+				if not self.grid[int(self.position.y)][int(self.position.x)].get_hole().filled:
 					return 1
 			elif next_cell == 10:
-				self.grid[int(self.position.x)][int(self.position.y)].get_flag().remove_item()
+				self.grid[int(self.position.y)][int(self.position.x)].get_flag().remove_item()
 				self.number_of_reverses += 1
 		elif next_cell == 2:
-			following_cell = self.grid[int((self.position + 2*self.direction).x)][int((self.position + 2*self.direction).y)].can_enter()
+			following_cell = self.grid[int((self.position + 2*self.direction).y)][int((self.position + 2*self.direction).x)].can_enter()
 			print("following cell:", following_cell)
 			if following_cell in {1,4,7,9}:
 				self.active_tile.leave(self)
-				self.grid[int((self.position + self.direction).x)][int((self.position + self.direction).y)].enter(self)
+				self.grid[int((self.position + self.direction).y)][int((self.position + self.direction).x)].enter(self)
 				if self.direction == (-1, 0):
 					self.active_spritesheet = "WalkingLeft"
 				elif self.direction == (1, 0):
@@ -59,10 +59,10 @@ class Player(Animated_Item):
 				self.position += direction
 				self.movements.append(self.direction)
 				self.moving = True
-				box = self.grid[int(self.position.x)][int(self.position.y)].get_box()
+				box = self.grid[int(self.position.y)][int(self.position.x)].get_box()
 				box.move(self.direction)
 				if following_cell == 7:
-					hole = self.grid[int(self.position.x+self.direction.x)][int(self.position.y+self.direction.y)].get_hole()
+					hole = self.grid[int(self.position.y+self.direction.y)][int(self.position.x+self.direction.x)].get_hole()
 					if not hole.filled:
 						hole.fall(box)
 

@@ -1,4 +1,5 @@
 import pygame
+import sys
 from game import Game
 
 pygame.init()
@@ -21,6 +22,7 @@ while playing:
 		if e.type == pygame.QUIT:
 			pygame.quit()
 			playing = False
+			sys.exit(0)
 		if e.type == pygame.KEYDOWN:
 			if not game.player.moving and not game.player.reversing and not game.player.powering and not game.menu:
 				if e.key == pygame.K_w:
@@ -61,6 +63,9 @@ while playing:
 							game.restart()
 			if e.key == pygame.K_ESCAPE:
 				game.menu_screen = 0
+				if not game.menu:
+					game.game_music.stop()
+					game.menu_music.play(-1)
 				game.menu = True
 		# Check collision with item
 		if e.type == pygame.MOUSEBUTTONUP:
@@ -71,7 +76,7 @@ while playing:
 					game.restart()
 				if game.player.number_of_reverses>0:
 					try:
-						for item in game.field.cells[mouse_pos[0]][mouse_pos[1]].objects_on_it:
+						for item in game.field.cells[mouse_pos[1]][mouse_pos[0]].objects_on_it:
 							if item.reversable:
 								game.player.power(item)
 								game.player.number_of_reverses -=1

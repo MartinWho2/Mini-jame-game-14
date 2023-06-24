@@ -94,7 +94,7 @@ class Animated_Item(Item):
 					if self.position == self.original_position:
 						self.reversing = False
 						self.direction = pygame.math.Vector2(0, 0)
-						self.grid[int(self.original_position.x)][int(self.original_position.y)].enter(self)
+						self.grid[int(self.original_position.y)][int(self.original_position.x)].enter(self)
 						self.particles_spritesheet.update(0)
 						if self.type == 'guard':
 							self.find_visible_tiles()

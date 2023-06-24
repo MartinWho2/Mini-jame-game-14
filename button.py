@@ -18,7 +18,7 @@ class Button(Normal_Item):
 		self.linked.change_state()
 
 	def refresh(self):
-		items = self.grid[int(self.position.x)][int(self.position.y)].objects_on_it
+		items = self.grid[int(self.position.y)][int(self.position.x)].objects_on_it
 		print(items)
 		for item in items:
 			if item.type == 'box' or item.type == 'player':
