@@ -13,7 +13,13 @@ class Guard(Animated_Item):
 		self.visible_tiles = []
 		self.find_real_visible_tiles()
 		self.light_image = pygame.rect.Rect(0,0,self.tile_size,self.tile_size)
-
+		self.exclamation_image = pygame.image.load('Images/exclamation.png')
+		self.exclamation_image = pygame.transform.scale(self.exclamation_image,
+														(self.exclamation_image.get_width() * 4,
+														 self.exclamation_image.get_height() * 4))
+		self.EXCLAMATION_OFFSET = pygame.Vector2(self.tile_size / 2 - self.exclamation_image.get_width() / 2,
+												 -self.exclamation_image.get_height())
+		self.detected = False
 		self.surprise_sound = pygame.mixer.Sound('sounds/Surprise.wav')
 
 	def move(self):
@@ -56,9 +62,15 @@ class Guard(Animated_Item):
 			if self.grid[tile[1]][tile[0]].can_enter()==3:
 				if not self.alert:
 					self.surprise_sound.play(0)
-				return 1
+					self.detected = True
+					return 1
 		return 0
-
+	def display(self,dt):
+		super().display(dt)
+		if self.detected:
+			self.window.blit(self.exclamation_image,
+						 (self.position.x * self.tile_size + self.map_offset.x + self.EXCLAMATION_OFFSET.x,
+						  (self.position.y-0.75) * self.tile_size + self.map_offset.y + self.EXCLAMATION_OFFSET.y))
 	def find_real_visible_tiles(self):
 		self.visible_tiles.clear()
 		directions = [(0,0),(0,1),(0,-1),(1,0),(1,-1),(1,1),(2,0),(2,-1),(2,-2),(2,1),(2,2)]

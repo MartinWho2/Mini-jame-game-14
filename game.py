@@ -1,6 +1,7 @@
 import os.path
 import random
 import json
+import time
 
 import pygame
 
@@ -93,6 +94,7 @@ class Game:
 		self.restart_button = TextButton(pygame.math.Vector2(12,0), "restart")
 
 	def generate_level(self):
+		self.spotted = 0
 		self.field.cells =[[None for j in range(self.MAP_SIZE[0]+2)] for i in range(self.MAP_SIZE[1]+2)] # Empty 2d array
 		self.field.generate_map()
 		self.reversable_objects.empty()
@@ -180,7 +182,6 @@ class Game:
 		self.time = pygame.time.get_ticks()
 		if not self.menu:
 			self.field.update(self.dt, self.window)
-
 			for item in self.non_reversible_objects:
 				item.display(self.dt)
 			for item in self.reversable_objects:
@@ -201,7 +202,15 @@ class Game:
 		if self.player.active_tile.__class__ == Exit_Door:
 			self.level_nb += 1
 			self.restart()
-
+		if self.spotted:
+			self.player.tp_to_correct_tile()
+			for guard in self.guards:
+				guard.tp_to_correct_tile()
+			if self.spotted < 4:
+				self.spotted += 1
+			else:
+				time.sleep(2)
+				self.restart()
 	def menu_update(self):
 		mouse_pos = pygame.mouse.get_pos()
 		if self.menu_screen == 0:

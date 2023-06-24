@@ -33,7 +33,8 @@ class Animated_Item(Item):
 			return "left"
 		elif dir == pygame.math.Vector2(1, 0):
 			return "right"
-
+	def tp_to_correct_tile(self):
+		self.moving_time = self.true_moving_time
 	def display(self, dt):
 		if not self.reversing:
 			image = self.spritesheets[self.active_spritesheet].update(dt)
@@ -54,7 +55,6 @@ class Animated_Item(Item):
 						self.window.blit(self.yellow_surf,(tile[0] * self.tile_size + self.map_offset.x, tile[1] * self.tile_size + self.map_offset.y))
 				elif self.type == 'player':
 					if self.powering:
-						print(image)
 						if self.active_spritesheet == 'Idle':
 							self.powering = False
 							self.spritesheets[self.active_spritesheet].reset()

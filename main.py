@@ -25,42 +25,24 @@ while playing:
 			sys.exit(0)
 		if e.type == pygame.KEYDOWN:
 			if not game.player.moving and not game.player.reversing and not game.player.powering and not game.menu:
+				vec = None
 				if e.key == pygame.K_w:
-					if game.player.move(pygame.math.Vector2(0,-1)):
-						game.restart()
-					for button in game.buttons:
-						print("refresh")
-						button.refresh()
-					for guard in game.guards:
-						if guard.move():
-							game.restart()
+					vec = pygame.math.Vector2(0,-1)
 				elif e.key == pygame.K_a:
-					if game.player.move(pygame.math.Vector2(-1,0)):
-						game.restart()
-					for button in game.buttons:
-						print("refresh")
-						button.refresh()
-					for guard in game.guards:
-						if guard.move():
-							game.restart()
+					vec = pygame.math.Vector2(-1,0)
 				elif e.key == pygame.K_s:
-					if game.player.move(pygame.math.Vector2(0,1)):
-							game.restart()
-					for button in game.buttons:
-						print("refresh")
-						button.refresh()
-					for guard in game.guards:
-						if guard.move():
-							game.restart()
+					vec = pygame.math.Vector2(0,1)
 				elif e.key == pygame.K_d:
-					if game.player.move(pygame.math.Vector2(1,0)):
+					vec = pygame.math.Vector2(1,0)
+				if vec is not None:
+					if game.player.move(vec):
 						game.restart()
 					for button in game.buttons:
 						print("refresh")
 						button.refresh()
 					for guard in game.guards:
 						if guard.move():
-							game.restart()
+							game.spotted = 1
 			if e.key == pygame.K_ESCAPE:
 				game.menu_screen = 0
 				if not game.menu:

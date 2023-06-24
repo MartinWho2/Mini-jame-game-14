@@ -73,7 +73,6 @@ class Player(Animated_Item):
 			print(next_cell)
 			self.moving = False
 		return 0
-
 	def power(self, item):
 		self.powering = True
 		self.powered_item = item

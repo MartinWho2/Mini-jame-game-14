@@ -54,9 +54,8 @@ class Tower(Animated_Item):
 
 			while walkable and empty_cell:
 				number_of_free_tiles += 1
-				new_coords= (new_coords[1] + self.direction[1], new_coords[0] + self.direction[0])
+				new_coords= (new_coords[0] + self.direction[0], new_coords[1] + self.direction[1])
 				walkable = self.cells[new_coords[1]][new_coords[0]].walkable
-				print(self.cells[new_coords[1]][new_coords[0]].can_enter())
 				empty_cell = self.cells[new_coords[1]][new_coords[0]].get_box() is None
 
 			if number_of_free_tiles != self.num_lasers:
@@ -67,7 +66,7 @@ class Tower(Animated_Item):
 		print("new fancy lasers")
 		self.remove_all_lasers()
 		print(f"There are {len(self.lasers)} lasers")
-		new_coords = (int(self.position.y + self.direction[1]), int(self.position.x + self.direction[0]))
+		new_coords = (int(self.position.x + self.direction[0]), int(self.position.y + self.direction[1]))
 		walkable = self.cells[new_coords[1]][new_coords[0]].walkable
 		empty_cell = self.cells[new_coords[1]][new_coords[0]].get_box() is None
 
@@ -109,12 +108,13 @@ class Laser(Animated_Item):
 			if self.direction[0] == -1:
 				spriteSheet.rotate_spritesheet(180)
 
-	def create_next_lasers(self):
-		new_pos = (int(self.position.x+self.direction[0]),int(self.position.y+self.direction[1]))
-		print(new_pos, self.grid[new_pos[1]][new_pos[0]].can_enter(),self.grid[new_pos[1]][new_pos[0]].objects_on_it)
-		if self.grid[new_pos[1]][new_pos[0]].can_enter() not in {0,2}:
-			self.next_laser = Laser(self.window,self.direction,pygame.Vector2(int(new_pos[0]),int(new_pos[1])),self.grid,self.map_offset, self.sprite_group)
-			self.next_laser.create_next_lasers()
+	# def create_next_lasers(self):
+	# 	new_pos = (int(self.position.x+self.direction[0]),int(self.position.y+self.direction[1]))
+	# 	print(new_pos, self.grid[new_pos[1]][new_pos[0]].can_enter(),self.grid[new_pos[1]][new_pos[0]].objects_on_it)
+	# 	if self.grid[new_pos[1]][new_pos[0]].can_enter() not in {0,2}:
+	# 		print("new laser")
+	# 		self.next_laser = Laser(self.window,self.direction,pygame.Vector2(int(new_pos[0]),int(new_pos[1])),self.grid,self.map_offset, self.sprite_group)
+	# 		self.next_laser.create_next_lasers()
 
 	def create_laser(self):
 		self.active_tile.enter(self)
